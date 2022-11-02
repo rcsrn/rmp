@@ -1,5 +1,9 @@
 package database
 
+import (
+	"strings"
+)
+
 type Rola struct {
 	id int64
 	performer string
@@ -56,7 +60,7 @@ func (rola *Rola) GetGenre() string {
 	return rola.genre
 }
 
-func (rola *Rola) SetArtist(artist string) {
+func (rola *Rola) SetArtist(performer string) {
 	rola.performer = strings.TrimSpace(performer)
 }
 

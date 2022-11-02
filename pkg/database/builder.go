@@ -5,7 +5,7 @@ type Builder struct {
 }
 
 func CreateNewBuilder() *Builder {
-	return Builder{}
+	return &Builder{}
 }
 
 func (builder *Builder) SetRolas(rolas []*Rola) {
