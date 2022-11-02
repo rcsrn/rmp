@@ -1,3 +1,3 @@
-module github.com/rcsrn/rpm
+module github.com/rcsrn/rmp
 
 go 1.19
