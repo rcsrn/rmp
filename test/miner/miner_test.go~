@@ -1,0 +1,9 @@
+package test
+
+import (
+	"github.com/rcsrn/rmp/pkg/miner"
+)
+
+func TestTransverse(t *testing.T) {
+	
+}

@@ -16,10 +16,12 @@ type Miner struct {
 	rolas []*database.Rola
 }
 
+//CreateNewMiner creates a new Miner with two empty slices to be filled later and a directoryPath.
 func CreateNewMiner(directoryPath string) *Miner {
 	return &Miner{directoryPath, make([]string, 0), make([]*database.Rola, 0)}
 }
 
+//Traverse traverses the miner's directoryPath searching for mp3 files. When a mp3 file is found its path is stored in the miner's filePaths.
 func (miner *Miner) Traverse() {
 	user, err := user.Current()
 	if err != nil {
@@ -45,8 +47,6 @@ func (miner *Miner) Traverse() {
 		log.Fatal("Error while traversing the music path '%v'",
 		musicPath)
 	}
-
-	fmt.Println(miner.filePaths)
 }
 
 func (miner *Miner) MineTags() {
