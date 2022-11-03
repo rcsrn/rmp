@@ -11,13 +11,12 @@ func Run() {
 }
 
 func obtainData() {
-	miner := miner.CreateNewMiner("")
+	miner := miner.CreateNewMiner("/home/casarin/Escuela/Modelado/Proyectos/rmp/test/miner/TestRolas")
 	miner.Traverse()
 	miner.MineTags()
+	
 	rolas := miner.GetRolas()
-
 	builder := database.CreateNewBuilder()
 	builder.SetRolas(rolas)
 	database := builder.BuildDataBase()
-	fmt.Println("it is all right here.", database)
 }

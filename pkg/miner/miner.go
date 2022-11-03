@@ -7,7 +7,8 @@ import (
 	"os"
 	"strings"
 	"errors"
-	"id3v2"
+	"github.com/dhowden/tag"
+	"fmt"
 )
 
 type Miner struct {
@@ -44,42 +45,76 @@ func (miner *Miner) Traverse() {
 }
 
 //MineTags searchs for ID3v2.4 tags of each mp3 file through its path stored in the miner's filePaths.
-//Once all tags of a file are obtained a Rola is created with that information.
+//Once all available tags of a file are obtained a Rola is created with that information.
+//If a file does not contain title tag then MineTags defines its name as default title.
 func (miner *Miner) MineTags() error {
 	for _, path := range miner.filePaths {
-		tag, err := id3v2.Open(path, id3v2.Options{Parse: true})
+		file, err := os.Open(path)
 		if err != nil {
-			return errors.New("Error while obtaining file tags of '%v'. %v",
-			path, err)
+			errorStr := fmt.Sprintf("Error while opening '%v'. %v",
+			file, err)
+			return errors.New(errorStr)
 		}
-		rola := database.createNewRola()
-		rola.setPath(path)
+
+		tag, err := tag.ReadFrom(file)
 		
-		if tag.Artist() != "" {
-			rola.SetPerformer(tag.Artist())
+		if err != nil {
+			errorStr := fmt.Sprintf("Error while obtaining file tags of '%v'. %v",
+			path, err)
+			return errors.New(errorStr)
 		}
-		if tag.Title() != "" {
-			rola.SetTitle(tag.Artist())
+		
+		rola := database.CreateNewRola()
+		
+		rola.SetPath(path)
+		if performer := tag.Artist(); performer != "" {
+			rola.SetPerformer(performer)
 		}
-		if tag.Album() != "" {
-			rola.SetAlbum(tag.Artist())
+		if title := tag.Title(); title != "" {
+			rola.SetTitle(title)
+			fmt.Println("llega aca")
+		} else {
+			title = defaultTitle(path)
+			rola.SetTitle(title)
 		}
-		if tag.Track() != 0 {
-			rola.SetTrack(tag.Artist())
+		if album := tag.Album(); album != "" {
+			rola.SetAlbum(album)
 		}
-		if tag.Year() != 0 {
-			rola.SetYear(tag.Artist())
+		if track, _ := tag.Track(); track != 0 {
+			rola.SetTrack(track)
 		}
-		if tag.Genre() != "" {
-			rola.SetGenre(tag.Artist())
+		if year := tag.Year(); year != 0 {
+			rola.SetYear(year)
 		}
+		if genre := tag.Genre(); genre != "" {
+			rola.SetGenre(genre)
+		}
+
+		fmt.Println(rola.GetTitle())
 	}
+	return nil
 }
 
+//GetRolas returns the rolas.
 func (miner *Miner) GetRolas() []*database.Rola {
 	return miner.rolas
 }
 
+//GetFilepaths returns the file paths.
 func (miner *Miner) GetFilePaths() []string {
 	return miner.filePaths
+}
+
+//defaultTitle returns the file name as default title for a file with
+//no title tag.
+func defaultTitle(path string) string {
+	var index int
+	path = strings.Trim(path, ".mp3")
+	for i := len(path) - 1; i > 0; i-- {
+		if string(path[i]) == "/" {
+			index = i + 1
+			break
+		}
+	}
+	return path[index:]
 }
