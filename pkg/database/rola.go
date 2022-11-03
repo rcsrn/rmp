@@ -15,7 +15,7 @@ type Rola struct {
 	genre string
 }
 
-func createNewRola() *Rola {
+func CreateNewRola() *Rola {
 	return &Rola{
 		id: 0,
 		performer: "Unknown",
@@ -60,7 +60,7 @@ func (rola *Rola) GetGenre() string {
 	return rola.genre
 }
 
-func (rola *Rola) SetArtist(performer string) {
+func (rola *Rola) SetPerformer(performer string) {
 	rola.performer = strings.TrimSpace(performer)
 }
 
