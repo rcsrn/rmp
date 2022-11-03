@@ -13,5 +13,9 @@ func (builder *Builder) SetRolas(rolas []*Rola) {
 }
 
 func (builder *Builder) BuildDataBase() *DataBase {
+	database := CreateNewDataBase()
+	for _, rola := range(builder.rolas) {
+		
+	}
 	return nil
 }

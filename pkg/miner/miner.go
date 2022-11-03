@@ -3,7 +3,6 @@ package miner
 import (
 	"github.com/rcsrn/rmp/pkg/database"
 	"path/filepath"
-	"log"
 	"os"
 	"strings"
 	"errors"
@@ -24,12 +23,12 @@ func CreateNewMiner(directoryPath string) *Miner {
 
 //Traverse traverses the miner's directoryPath searching for mp3 files. When a mp3 file is found
 //its path is stored in the miner's filePaths.
-func (miner *Miner) Traverse() {
+func (miner *Miner) Traverse() error {
 	err := filepath.Walk(miner.directoryPath, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			log.Fatal("It is not possible to acces",
+			errorStr := fmt.Sprintf("It is not possible to acces",
 				path, err)
-			return err
+			return errors.New(errorStr)
 		}
 		
 		if !info.IsDir() && strings.HasSuffix(info.Name(), ".mp3") {
@@ -39,9 +38,10 @@ func (miner *Miner) Traverse() {
 	})
 
 	if err != nil {
-		log.Fatal("Error while traversing the music path '%v'",
-		miner.directoryPath)
+		errorStr := fmt.Sprintf("Error while traversing the music path '%v'",miner.directoryPath)
+		return errors.New(errorStr)
 	}
+	return nil
 }
 
 //MineTags searchs for ID3v2.4 tags of each mp3 file through its path stored in the miner's filePaths.

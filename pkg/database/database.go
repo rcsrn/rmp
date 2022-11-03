@@ -1,6 +1,7 @@
 package database
 
-import (
+import (	
+	//"github.com/mattn/go-sqlite3"
 	"database/sql"
 )
 
@@ -9,7 +10,7 @@ type DataBase struct {
 }
 
 func CreateNewDataBase() *DataBase {
-	return nil
+	
 }
 
 func (database *DataBase) AddRola() {
