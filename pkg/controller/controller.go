@@ -14,7 +14,7 @@ func Run() {
 }
 
 func obtainData() {
-	miner := miner.CreateNewMiner("/home/casarin/m/")
+	miner := miner.CreateNewMiner("/home/casarin/Escuela/Modelado/Proyectos/rmp/test/miner/TestRolas")
 
 	err := miner.Traverse()	
 	if err != nil {
@@ -25,7 +25,6 @@ func obtainData() {
 	if err != nil {
 		fatal(err)
 	}
-
 	dbPath := getDBPath()
 	rolas := miner.GetRolas()
 	
@@ -38,7 +37,7 @@ func obtainData() {
 }
 
 func fatal(err error) {
-		//it should show the error to user.
+	//it should show the error to user.
 	log.Fatal(err)	
 }
 
@@ -47,5 +46,5 @@ func getDBPath() string{
 	if err != nil {
 		fatal(errors.New("Could not retrieve the current user."))
 	}
-	return user.HomeDir + "/internal/rmpDB"
+	return user.HomeDir + "/.local/rmpDB/rmp.sql"
 }
