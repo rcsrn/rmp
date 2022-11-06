@@ -2,20 +2,18 @@ package database
 
 type Builder struct {
 	rolas []*Rola
+	dbPath string
 }
 
-func CreateNewBuilder() *Builder {
-	return &Builder{}
+func CreateNewBuilder(rolas []*Rola, dbPath string) *Builder {
+	return &Builder{rolas, dbPath}
 }
 
-func (builder *Builder) SetRolas(rolas []*Rola) {
-	builder.rolas = rolas
-}
-
-func (builder *Builder) BuildDataBase() *DataBase {
-	database := CreateNewDataBase()
-	for _, rola := range(builder.rolas) {
-		
+func (builder *Builder) BuildDataBase() (*DataBase, error) {
+	database, err := CreateNewDataBase()
+	if err != nil {
+		return nil, err
 	}
-	return nil
+	return database, nil
 }
+

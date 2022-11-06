@@ -26,20 +26,17 @@ func CreateNewMiner(directoryPath string) *Miner {
 func (miner *Miner) Traverse() error {
 	err := filepath.Walk(miner.directoryPath, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			errorStr := fmt.Sprintf("It is not possible to acces",
-				path, err)
-			return errors.New(errorStr)
+			return errors.New("It is not possible to acces"  + ": " + err.Error())
 		}
 		
-		if !info.IsDir() && strings.HasSuffix(info.Name(), ".mp3") {
+		if !info.IsDir() && strings.HasSuffix(info.Name(), ".m4a") {
 			miner.filePaths = append(miner.filePaths, path)
 		}
 		return nil
 	})
 
 	if err != nil {
-		errorStr := fmt.Sprintf("Error while traversing the music path '%v'",miner.directoryPath)
-		return errors.New(errorStr)
+		return errors.New("Error while traversing the music path" + ": " + err.Error())
 	}
 	return nil
 }
@@ -51,9 +48,7 @@ func (miner *Miner) MineTags() error {
 	for _, path := range miner.filePaths {
 		file, err := os.Open(path)
 		if err != nil {
-			errorStr := fmt.Sprintf("Error while opening '%v'. %v",
-			file, err)
-			return errors.New(errorStr)
+			return errors.New("Error while opening" + ": " + err.Error())
 		}
 
 		tag, err := tag.ReadFrom(file)
@@ -72,7 +67,6 @@ func (miner *Miner) MineTags() error {
 		}
 		if title := tag.Title(); title != "" {
 			rola.SetTitle(title)
-			fmt.Println("llega aca")
 		} else {
 			title = defaultTitle(path)
 			rola.SetTitle(title)
