@@ -5,7 +5,6 @@ import (
 	"github.com/rcsrn/rmp/pkg/miner"
 	"log"
 	"fmt"
-	"path/filepath"
 	"os/user"
 	"errors"
 )
@@ -16,7 +15,7 @@ func Run() {
 
 func obtainData() {
 	miner := miner.CreateNewMiner("/home/casarin/m/")
-	
+
 	err := miner.Traverse()	
 	if err != nil {
 		fatal(err)
@@ -46,7 +45,7 @@ func fatal(err error) {
 func getDBPath() string{
 	user, err := user.Current()
 	if err != nil {
-		errors.New("Could not retrieve the current user.") 
+		fatal(errors.New("Could not retrieve the current user."))
 	}
-	return filepath.Dir(filepath.Dir(user.HomeDir)) + "/internal/db"
+	return user.HomeDir + "/internal/rmpDB"
 }

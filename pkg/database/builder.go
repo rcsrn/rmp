@@ -10,7 +10,7 @@ func CreateNewBuilder(rolas []*Rola, dbPath string) *Builder {
 }
 
 func (builder *Builder) BuildDataBase() (*DataBase, error) {
-	database, err := CreateNewDataBase()
+	database, err := CreateNewDataBase(builder.dbPath)
 	if err != nil {
 		return nil, err
 	}
