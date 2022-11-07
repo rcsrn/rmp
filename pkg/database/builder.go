@@ -2,7 +2,9 @@ package database
 
 import (
 	"github.com/qustavo/dotsql"
-	"path/filepath"
+	_"path/filepath"
+	_"os"
+	"fmt"
 )
 
 type Builder struct {
@@ -20,13 +22,15 @@ func (builder *Builder) BuildDataBase() (*DataBase, error) {
 		return nil, err
 	}
 
-	parent := filepath.Dir(database.dbPath)
+	fmt.Println("ACA")
 	
-	dot, err := dotsql.LoadFromFile(parent)
+	dot, err := dotsql.LoadFromFile(builder.dbPath + "rmp.sql")
 	if err != nil {
 		return nil, err
 	}
 
+	fmt.Println("ACA")
+	
 	nameTags := make([]string, 0)
 	
 	nameTags = append(nameTags, "create-" + "types-table")
