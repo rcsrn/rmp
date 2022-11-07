@@ -1,5 +1,4 @@
--- tables
--- Table: call
+CREATE DATABASE new_database;
 
 -- name: create-types-table
 CREATE TABLE types (
@@ -57,8 +56,10 @@ CREATE TABLE rolas (
        track INTEGER ,
        year INTEGER ,
        genre TEXT ,
-       FOREIGN KEY ( id_performer ) REFERENCES performers ( id_performer ),
-       FOREIGN KEY ( id_album ) REFERENCES albums ( id_album )		);
+       FOREIGN KEY ( id_performer ) REFERENCES performers ( id_performer ) ,
+       FOREIGN KEY ( id_album )
+       REFERENCES albums ( id_album )
+);
 
 -- name: create-in_group-table
 CREATE TABLE in_group (
@@ -67,4 +68,4 @@ CREATE TABLE in_group (
        PRIMARY KEY (id_person, id_group),
        FOREIGN KEY (id_person) REFERENCES persons(id_person),
        FOREIGN KEY (id_group) REFERENCES groups(id_group)
-);      
+       );      
