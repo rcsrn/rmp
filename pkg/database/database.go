@@ -1,8 +1,8 @@
 package database
 
 import (	
-	//"github.com/mattn/go-sqlite3"
-	//"github.com/qustavo/dotsql"
+	_"github.com/mattn/go-sqlite3"
+	_"github.com/qustavo/dotsql"
 	"database/sql"
 	"errors"
 	"os"
@@ -21,8 +21,8 @@ func CreateNewDataBase(dbPath string) (*DataBase, error) {
 	os.Mkdir(parent, 0700)
 	
 	if _, err := os.Stat(dbPath); os.IsNotExist(err) {
-		createDBFile(dbPath)
-	}
+	 	createDBFile(dbPath)
+	 }
 	
 	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
@@ -58,7 +58,11 @@ func (database *DataBase) AddPerson() {
 }
 
 func createDBFile(dbPath string) error {
-	os.Create(dbPath)
+	parent := filepath.Dir(dbPath)
+	_, err := RestoreAsset(parent + "rmp.sql")
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

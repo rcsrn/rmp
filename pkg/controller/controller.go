@@ -46,5 +46,5 @@ func getDBPath() string{
 	if err != nil {
 		fatal(errors.New("Could not retrieve the current user."))
 	}
-	return user.HomeDir + "/.local/rmpDB/rmp.sql"
+	return user.HomeDir + "/.local/rmpDB/rmp.db"
 }
