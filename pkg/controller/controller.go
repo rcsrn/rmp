@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/rcsrn/rmp/pkg/database"
 	"github.com/rcsrn/rmp/pkg/miner"
+	"github.com/rcsrn/rmp/pkg/view"
 	"log"
 	"fmt"
 	"os/user"
@@ -11,10 +12,12 @@ import (
 
 func Run() {
 	obtainData()
+	startView()
+	
 }
 
-func obtainData() {
-	miner := miner.CreateNewMiner("/home/casarin/Escuela/Modelado/Proyectos/rmp/test/miner/TestRolas")
+func obtainData() { 
+	miner := miner.CreateNewMiner("/home/rodrigo/Escuela/Modelado/Proyectos/rmp/test/miner/TestRolas")
 
 	err := miner.Traverse()	
 	check(err)
@@ -41,4 +44,8 @@ func getDBPath() string{
 	user, err := user.Current()
 	check(err)
 	return user.HomeDir + "/.local/rmp"
+}
+
+func startView() {
+	view.RunMainWindow()
 }
