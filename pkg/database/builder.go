@@ -31,7 +31,7 @@ func (builder *Builder) BuildDataBase() (*DataBase, error) {
 
 	if !database.fileExists {
 		builder.buildDBFile(database)
-		builder.poblateDataBase()
+		builder.poblateDataBase(database)
 	}	
 
 	err = database.Load()
@@ -71,8 +71,12 @@ func (builder *Builder) buildDBFile(database *DataBase) error{
 	return nil
 }
 
-func (builder *Builder) poblateDataBase() {
-	
+func (builder *Builder) poblateDataBase(database *DataBase) {
+	id := 0
+	for _, rola := range(builder.rolas) {
+		builder.executer.Exec(database.db, "insert-rola", id, rola.GetPerformer(), rola.GetAlbum(), rola.GetPath(), rola.GetTitle(), rola.GetTrack(), rola.GetYear(), rola.GetGenre())
+		id++
+	}
 }
 
 func getExecuter() (*dotsql.DotSql, error) {
