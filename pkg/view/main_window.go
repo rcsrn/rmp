@@ -9,6 +9,7 @@ import (
 func RunMainWindow() {
 	myApp := app.New()
 	myWindow := myApp.NewWindow("RMP")
+	myWindow.SetMaster()
 	defaultSize := fyne.NewSize(800, 400)
 	myWindow.Resize(defaultSize)
 	
