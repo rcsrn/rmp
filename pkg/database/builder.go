@@ -31,7 +31,10 @@ func (builder *Builder) BuildDataBase() (*DataBase, error) {
 
 	if !database.fileExists {
 		builder.buildDBFile(database)
-		builder.poblateDataBase(database)
+		err = builder.poblateDataBase(database)
+		if err != nil {
+			return nil, err
+		}
 	}	
 
 	err = database.Load()
@@ -56,7 +59,7 @@ func (builder *Builder) buildDBFile(database *DataBase) error{
 	setup = append(setup, CREATE+"persons"+TABLE)
 	setup = append(setup, CREATE+"groups"+TABLE)
 	setup = append(setup, CREATE+"albums"+TABLE)
-	setup = append(setup, CREATE+"rmp"+TABLE)
+	setup = append(setup, CREATE+"rolas"+TABLE)
 	setup = append(setup, CREATE+"in_group"+TABLE)
 
 	for _, query := range setup {
@@ -71,12 +74,16 @@ func (builder *Builder) buildDBFile(database *DataBase) error{
 	return nil
 }
 
-func (builder *Builder) poblateDataBase(database *DataBase) {
+func (builder *Builder) poblateDataBase(database *DataBase) error {
 	id := 0
 	for _, rola := range(builder.rolas) {
-		builder.executer.Exec(database.db, "insert-rola", id, rola.GetPerformer(), rola.GetAlbum(), rola.GetPath(), rola.GetTitle(), rola.GetTrack(), rola.GetYear(), rola.GetGenre())
+		_, err := builder.executer.Exec(database.db, "insert-rola", id, rola.GetPerformer(), rola.GetAlbum(), rola.GetPath(), rola.GetTitle(), rola.GetTrack(), rola.GetYear(), rola.GetGenre())
 		id++
+		if err != nil {
+			return err
+		}
 	}
+	return nil
 }
 
 func getExecuter() (*dotsql.DotSql, error) {

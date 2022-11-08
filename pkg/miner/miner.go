@@ -29,7 +29,7 @@ func (miner *Miner) Traverse() error {
 			return errors.New("It is not possible to acces"  + ": " + err.Error())
 		}
 		
-		if !info.IsDir() && strings.HasSuffix(info.Name(), ".m4a") {
+		if !info.IsDir() && strings.HasSuffix(info.Name(), ".mp3") {
 			miner.filePaths = append(miner.filePaths, path)
 		}
 		return nil
@@ -84,7 +84,7 @@ func (miner *Miner) MineTags() error {
 			rola.SetGenre(genre)
 		}
 
-		fmt.Println(rola.GetTitle())
+		miner.rolas = append(miner.rolas, rola)
 	}
 	return nil
 }
