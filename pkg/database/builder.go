@@ -10,10 +10,11 @@ import (
 type Builder struct {
 	rolas []*Rola
 	dbPath string
+	executer *dotsql.DotSql
 }
 
 func CreateNewBuilder(rolas []*Rola, dbPath string) *Builder {
-	return &Builder{rolas, dbPath}
+	return &Builder{rolas, dbPath, nil}
 }
 
 func (builder *Builder) BuildDataBase() (*DataBase, error) {
@@ -22,8 +23,15 @@ func (builder *Builder) BuildDataBase() (*DataBase, error) {
 		return nil, err
 	}
 
+	executer, err := getExecuter()
+	if err != nil {
+		return nil, err
+	}
+	builder.executer = executer
+
 	if !database.fileExists {
-		CreateDBFile(database)
+		builder.buildDBFile(database)
+		builder.poblateDataBase()
 	}	
 
 	err = database.Load()
@@ -34,20 +42,7 @@ func (builder *Builder) BuildDataBase() (*DataBase, error) {
 	return database, nil
 }
 
-func CreateDBFile(database *DataBase) error{
-	current, err := os.Getwd()
-	if err != nil {
-		return err
-	}
-
-	sqlPath := current + "/pkg/database/rmp.sql"
-	
-	
-	dot, err := dotsql.LoadFromFile(sqlPath)
-	if err != nil {
-		return err
-	}
-
+func (builder *Builder) buildDBFile(database *DataBase) error{
 	CREATE := "create-"
 	TABLE := "-table"
 
@@ -65,7 +60,7 @@ func CreateDBFile(database *DataBase) error{
 	setup = append(setup, CREATE+"in_group"+TABLE)
 
 	for _, query := range setup {
-		_, err = dot.Exec(database.db, query)
+		_, err := builder.executer.Exec(database.db, query)
 		if err != nil {
 			return err
 		}
@@ -74,4 +69,21 @@ func CreateDBFile(database *DataBase) error{
 	database.fileExists = true
 	
 	return nil
+}
+
+func (builder *Builder) poblateDataBase() {
+	
+}
+
+func getExecuter() (*dotsql.DotSql, error) {
+	current, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
+	sqlPath := current + "/pkg/database/rmp.sql"
+	executer, err := dotsql.LoadFromFile(sqlPath)
+	if err != nil {
+		return nil, err
+	}
+	return executer, nil
 }
