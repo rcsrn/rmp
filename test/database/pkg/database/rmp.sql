@@ -66,12 +66,11 @@ CREATE TABLE in_group (
        PRIMARY KEY (id_person, id_group),
        FOREIGN KEY (id_person) REFERENCES persons(id_person),
        FOREIGN KEY (id_group) REFERENCES groups(id_group)
-);
+);      
 
 -- name: insert-rola
 INSERT INTO rolas (id_rola, id_performer, id_album, path, title, track, year,
 genre) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 
-
--- name: find-users-by-email
+-- name: find-rolas-by-id
 SELECT * FROM rolas WHERE id_rola = ?

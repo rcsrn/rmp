@@ -41,6 +41,8 @@ func (builder *Builder) BuildDataBase() (*DataBase, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	database.SetExecuter(executer)
 	
 	return database, nil
 }
@@ -49,20 +51,20 @@ func (builder *Builder) buildDBFile(database *DataBase) error{
 	CREATE := "create-"
 	TABLE := "-table"
 
-	setup := make([]string, 0)
+	nameTags := make([]string, 0)
 
-	setup = append(setup, CREATE+"types-table")
-	setup = append(setup, CREATE+"type0")
-	setup = append(setup, CREATE+"type1")
-	setup = append(setup, CREATE+"type2")
-	setup = append(setup, CREATE+"performers"+TABLE)
-	setup = append(setup, CREATE+"persons"+TABLE)
-	setup = append(setup, CREATE+"groups"+TABLE)
-	setup = append(setup, CREATE+"albums"+TABLE)
-	setup = append(setup, CREATE+"rolas"+TABLE)
-	setup = append(setup, CREATE+"in_group"+TABLE)
+	nameTags = append(nameTags, CREATE+"types-table")
+	nameTags = append(nameTags, CREATE+"type0")
+	nameTags = append(nameTags, CREATE+"type1")
+	nameTags = append(nameTags, CREATE+"type2")
+	nameTags = append(nameTags, CREATE+"performers"+TABLE)
+	nameTags = append(nameTags, CREATE+"persons"+TABLE)
+	nameTags = append(nameTags, CREATE+"groups"+TABLE)
+	nameTags = append(nameTags, CREATE+"albums"+TABLE)
+	nameTags = append(nameTags, CREATE+"rolas"+TABLE)
+	nameTags = append(nameTags, CREATE+"in_group"+TABLE)
 
-	for _, query := range setup {
+	for _, query := range nameTags {
 		_, err := builder.executer.Exec(database.db, query)
 		if err != nil {
 			return err
