@@ -1,7 +1,6 @@
 package database
 
 import (
-	"github.com/qustavo/dotsql"
 	_"github.com/mattn/go-sqlite3"
 	"database/sql"
 	"errors"
@@ -96,7 +95,7 @@ func (database *DataBase) AddPerson() {
 func (database *DataBase) Load() error {
 	err := database.db.Ping()
 	if err != nil {
-		return errors.New("QUE MIERDA" + err.Error())
+		return errors.New("Could not load the database: " + err.Error())
 	}
 	return nil
 }
