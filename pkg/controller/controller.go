@@ -27,7 +27,6 @@ func obtainData() {
 	builder := database.CreateNewBuilder(rolas, dbPath)
 	database, err := builder.BuildDataBase()
 	check(err)
-	
 	fmt.Println(database)
 }
 
@@ -41,5 +40,5 @@ func check(err error) {
 func getDBPath() string{
 	user, err := user.Current()
 	check(err)
-	return user.HomeDir + "/home/casarin/Escuela/Modelado/Proyectos/rmp/pkg/database/"
+	return user.HomeDir + "/.local/rmp"
 }

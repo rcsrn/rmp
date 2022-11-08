@@ -1,9 +1,7 @@
-CREATE DATABASE new_database;
-
 -- name: create-types-table
 CREATE TABLE types (
        id_type INTEGER PRIMARY KEY,
-       description TEXT,
+       description TEXT
 );
 
 -- name: create-type0
@@ -68,4 +66,8 @@ CREATE TABLE in_group (
        PRIMARY KEY (id_person, id_group),
        FOREIGN KEY (id_person) REFERENCES persons(id_person),
        FOREIGN KEY (id_group) REFERENCES groups(id_group)
-       );      
+);      
+
+-- name: insert-rola
+INSERT INTO rolas (id_rola, id_performer, id_album, path, title, track, year,
+genre) VALUES (?, ?, ?, ?, ?, ?, ?, ?)

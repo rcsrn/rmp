@@ -1,10 +1,10 @@
 package database
 
 import (
-	"github.com/qustavo/dotsql"
+	_"github.com/qustavo/dotsql"
 	_"path/filepath"
 	_"os"
-	"fmt"
+	_"fmt"
 )
 
 type Builder struct {
@@ -22,35 +22,14 @@ func (builder *Builder) BuildDataBase() (*DataBase, error) {
 		return nil, err
 	}
 
-	fmt.Println("ACA")
-	
-	dot, err := dotsql.LoadFromFile(builder.dbPath + "rmp.sql")
+	if !database.fileExists {
+		database.CreateDBFile()
+	}	
+
+	err = database.Load()
 	if err != nil {
 		return nil, err
 	}
-
-	fmt.Println("ACA")
 	
-	nameTags := make([]string, 0)
-	
-	nameTags = append(nameTags, "create-" + "types-table")
-	nameTags = append(nameTags, "create-" + "type0")
-	nameTags = append(nameTags, "create-" + "type1")
-	nameTags = append(nameTags, "create-" + "type2")
-	nameTags = append(nameTags, "create-" + "performers" + "-table")
-	nameTags = append(nameTags, "create-" + "persons" + "-table")
-	nameTags = append(nameTags, "create-" + "groups" + "-table")
-	nameTags = append(nameTags, "create-" + "albums" + "-table")
-	nameTags = append(nameTags, "create-" + "rolas" + "-table")
-	nameTags = append(nameTags, "create-" + "in_group" + "-table")
-
-	for _, query := range nameTags {
-		_, err = dot.Exec(database.db, query)
-		if err != nil {
-			return nil, err
-		}
-	}
-
 	return database, nil
 }
-
