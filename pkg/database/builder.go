@@ -80,7 +80,29 @@ func (builder *Builder) poblateDataBase(database *DataBase) error {
 	id := 0
 	for _, rola := range(builder.rolas) {
 		_, err := builder.executer.Exec(database.db, "insert-rola", id, rola.GetPerformer(), rola.GetAlbum(), rola.GetPath(), rola.GetTitle(), rola.GetTrack(), rola.GetYear(), rola.GetGenre())
-		id++
+		if err != nil {
+			return err
+		}
+		err = builder.AddPerformer(database, id, rola)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func isUnknown(tag string) bool {
+	return tag == "<Unknown>"
+}
+
+func (builder *Builder) AddPerformer(database *DataBase, id int, rola *Rola) error {
+	if isUnknown(rola.GetPerformer()) {
+		_, err := builder.executer.Exec(database.db, "insert-performers", id, 2)
+		if err != nil {
+			return err
+		}	
+	} else {
+		_, err := builder.executer.Exec(database.db, "insert-performers", id, 0)
 		if err != nil {
 			return err
 		}

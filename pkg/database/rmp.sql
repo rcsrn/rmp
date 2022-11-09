@@ -72,6 +72,20 @@ CREATE TABLE in_group (
 INSERT INTO rolas (id_rola, id_performer, id_album, path, title, track, year,
 genre) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 
+-- name: insert-album
+INSERT INTO albums (id_album, path, name, year) VALUES (?, ?, ?, ?)
+
+-- name: insert-group
+INSERT INTO  groups (id_group, name, start_date, end_date) VALUES (?, ?, ?, ?)
+
+-- name: insert-in_group
+INSERT INTO in_groups (id_person, id_group) VALUES (?, ?)
+
+-- name: insert-person
+INSERT INTO persons (id_person, stage_name, real_name, birth_date, death_date) VALUES (?, ?, ?, ?, ?)
+
+-- name: instert-performer
+INSERT INTO performers (id_performer, id_type, name) VALUES (?, ?, ?)
 
 -- name: find-users-by-email
 SELECT * FROM rolas WHERE id_rola = ?
