@@ -55,8 +55,7 @@ CREATE TABLE rolas (
        year INTEGER ,
        genre TEXT ,
        FOREIGN KEY ( id_performer ) REFERENCES performers ( id_performer ) ,
-       FOREIGN KEY ( id_album )
-       REFERENCES albums ( id_album )
+       FOREIGN KEY ( id_album ) REFERENCES albums ( id_album )
 );
 
 -- name: create-in_group-table
@@ -84,7 +83,7 @@ INSERT INTO in_groups (id_person, id_group) VALUES (?, ?)
 -- name: insert-person
 INSERT INTO persons (id_person, stage_name, real_name, birth_date, death_date) VALUES (?, ?, ?, ?, ?)
 
--- name: instert-performer
+-- name: insert-performer
 INSERT INTO performers (id_performer, id_type, name) VALUES (?, ?, ?)
 
 -- name: find-users-by-email

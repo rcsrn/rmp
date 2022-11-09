@@ -79,14 +79,12 @@ func (builder *Builder) buildDBFile(database *DataBase) error{
 func (builder *Builder) poblateDataBase(database *DataBase) error {
 	id := 0
 	for _, rola := range(builder.rolas) {
-		_, err := builder.executer.Exec(database.db, "insert-rola", id, rola.GetPerformer(), rola.GetAlbum(), rola.GetPath(), rola.GetTitle(), rola.GetTrack(), rola.GetYear(), rola.GetGenre())
+		err := builder.InsertRola(database, id, rola)
+		err = builder.InsertPerformer(database, id, rola)
 		if err != nil {
 			return err
 		}
-		err = builder.AddPerformer(database, id, rola)
-		if err != nil {
-			return err
-		}
+		id++
 	}
 	return nil
 }
@@ -95,20 +93,30 @@ func isUnknown(tag string) bool {
 	return tag == "<Unknown>"
 }
 
-func (builder *Builder) AddPerformer(database *DataBase, id int, rola *Rola) error {
+
+func (builder *Builder) InsertRola(database *DataBase, id int, rola *Rola) error {
+	_, err := builder.executer.Exec(database.db, "insert-rola", id, id, id, rola.GetPath(), rola.GetTitle(), rola.GetTrack(), rola.GetYear(), rola.GetGenre())
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (builder *Builder) InsertPerformer(database *DataBase, id int, rola *Rola) error {
 	if isUnknown(rola.GetPerformer()) {
-		_, err := builder.executer.Exec(database.db, "insert-performers", id, 2)
+		_, err := builder.executer.Exec(database.db, "insert-performer", id, 2, rola.GetPerformer())
 		if err != nil {
 			return err
 		}	
 	} else {
-		_, err := builder.executer.Exec(database.db, "insert-performers", id, 0)
+		_, err := builder.executer.Exec(database.db, "insert-performer", id, 0, rola.GetPerformer()) 
 		if err != nil {
 			return err
 		}
 	}
 	return nil
 }
+
 
 func getExecuter() (*dotsql.DotSql, error) {
 	current, err := os.Getwd()

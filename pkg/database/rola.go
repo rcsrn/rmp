@@ -18,13 +18,13 @@ type Rola struct {
 func CreateNewRola() *Rola {
 	return &Rola{
 		id: 0,
-		performer: "Unknown",
-		album: "Unknown",
-		path: "Unknown",
-		title: "Unknown",
+		performer: "<Unknown>",
+		album: "<Unknown>",
+		path: "<Unknown>",
+		title: "<Unknown>",
 		track: 0,
 		year: 0,
-		genre: "Unknown",
+		genre: "<Unknown>",
 	}
 }
 
