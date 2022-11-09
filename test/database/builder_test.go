@@ -4,9 +4,9 @@ import (
 	"testing"
 	"github.com/rcsrn/rmp/pkg/database"
 	"github.com/rcsrn/rmp/pkg/miner"
-	"fmt"
+	_"fmt"
 	"os"
-	"github.com/lib/pq"
+	_"github.com/lib/pq"
 )
 
 var testBuilder *database.Builder
@@ -33,12 +33,5 @@ func TestBuildDataBase(t *testing.T) {
 	if err != nil || testDataBase == nil {
 		t.Errorf("Could not build the database: " + err.Error())
 	}
-	
-	query := `SELECT * FROM rolas WHERE id_rolas = ANY($1)`
-	
-	rows, err := testDataBase.Query(query, pq.Array([]int{1}))
-	if err != nil {
-		t.Errorf("Could not get query: " + err.Error())
-	}
-	fmt.Println(rows )
+
 }

@@ -5,8 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"os"
-	_"path/filepath"
-	"fmt"
+	"path/filepath"
 )
 
 type DataBase struct {
@@ -16,7 +15,6 @@ type DataBase struct {
 }
 
 func CreateNewDataBase(dbPath string) (*DataBase, error) {
-	fmt.Println(dbPath)
 	os.Mkdir(dbPath, 0700)
 	
 	fileExists := true
@@ -76,8 +74,66 @@ func (database *DataBase) AddRola(rola *Rola, idperformer int64, idalbum int64) 
 	return -1, nil
 }
 
-func (database *DataBase) AddAlbum() {
+func (database *DataBase) AddAlbum(rola *Rola) (int64, error) {
+	idalbum, err := database.ExistsAlbum(filepath.Dir(rola.GetPath()), rola.GetAlbum())
+	if err != nil {
+		return -1, err
+	}
+
 	
+	if idalbum > 0 {
+		return idalbum, nil
+	}
+	
+	stmtStr := `INSERT
+                INTO albums (
+                  path,
+                  name,
+                  year)
+                SELECT ?, ?, ?
+                WHERE NOT EXISTS
+                (SELECT 1 FROM albums WHERE path = ? AND name = ?)`
+	
+	tx, stmt, err := database.PrepareStatement(stmtStr)
+	if err != nil {
+		return -1, err
+	}
+	defer stmt.Close()
+	
+	id, err := stmt.Exec(filepath.Dir(rola.GetPath()), rola.GetAlbum(), rola.GetYear(), filepath.Dir(rola.GetPath()), rola.GetAlbum())
+	if err != nil {
+		return -1, err
+	}
+	tx.Commit()
+	lastId, err := id.LastInsertId()
+	if err != nil {
+		return -1, err
+	}
+	return lastId, nil
+}
+
+func (database *DataBase) ExistsAlbum(albumPath, name string) (int64, error) {
+	stmtStr := "SELECT id_album FROM albums WHERE albums.path = ? AND albums.name = ? LIMIT 1"
+	tx, stmt, rows, err := database.PreparedQuery(stmtStr, albumPath, name)
+	if err != nil {
+		return -1, err
+	}
+	defer stmt.Close()
+	defer rows.Close()
+	
+	var id int64
+	for rows.Next() {
+		err := rows.Scan(&id)
+		if err != nil {
+			return -1, err
+		}
+	}
+	err = rows.Err()
+	if err != nil {
+		return -1, err
+	}
+	tx.Commit()
+	return id, nil
 }
 
 func (database *DataBase) AddPerformer() {
@@ -110,6 +166,19 @@ func (database *DataBase) PrepareStatement(statement string) (*sql.Tx, *sql.Stmt
 		return nil, nil, errors.New("could not prepare statement: " + err.Error())
 	}
 	return tx, stmt, nil
+}
+
+func (database *DataBase) PreparedQuery(statement string, args ...interface{}) (*sql.Tx, *sql.Stmt, *sql.Rows, error) {
+	tx, stmt, err := database.PrepareStatement(statement)
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	
+	rows, err := stmt.Query(args...)
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	return tx, stmt, rows, nil
 }
 
 func (database *DataBase) Query(query string, args ...any) (*sql.Rows, error) {

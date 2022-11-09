@@ -48,7 +48,6 @@ func (builder *Builder) BuildDataBase() (*DataBase, error) {
 func (builder *Builder) buildDBFile(database *DataBase) error{
 	CREATE := "create-"
 	TABLE := "-table"
-
 	nameTags := make([]string, 0)
 
 	nameTags = append(nameTags, CREATE+"types-table")
