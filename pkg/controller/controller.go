@@ -7,6 +7,7 @@ import (
 	"log"
 	"fmt"
 	"os/user"
+	"os"
 	_"errors"
 )
 
@@ -16,7 +17,7 @@ func Run() {
 	
 }
 
-func obtainData() { 
+func obtainData() {
 	miner := miner.CreateNewMiner("/home/rodrigo/Escuela/Modelado/Proyectos/rmp/test/miner/TestRolas")
 
 	err := miner.Traverse()	
@@ -48,4 +49,13 @@ func getDBPath() string{
 
 func startView() {
 	view.RunMainWindow()
+}
+
+func getCurrentPath() string {
+	current, _ := os.Getwd()
+	return current
+}
+
+func getMusicPath() string {
+	return ""
 }

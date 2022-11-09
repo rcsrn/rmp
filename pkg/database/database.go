@@ -39,7 +39,7 @@ func (database *DataBase) SetExecuter(executer *dotsql.DotSql) {
 }
 
 func (database *DataBase) AddRola(rola *Rola, idperformer int64, idalbum int64) (int64, error) {
-		stmtStr := `INSERT
+	stmtStr := `INSERT
                 INTO rolas (
                   id_performer,
                   id_album,
@@ -55,7 +55,7 @@ func (database *DataBase) AddRola(rola *Rola, idperformer int64, idalbum int64) 
                   AND id_album = ?
                   AND genre = ?)
 				  OR path = ?)`
-
+	
 	tx, stmt, err := database.PrepareStatement(stmtStr)
 	if err != nil {
 		return -1, err

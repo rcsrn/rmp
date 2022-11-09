@@ -8,3 +8,6 @@ func CreateNewRequestProcessor() *RequestProcessor {
 	return nil
 }
 
+func ProcessRequest(request string) string {
+	return ""
+}
