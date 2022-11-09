@@ -1,7 +1,6 @@
 package database
 
 import (
-	"github.com/qustavo/dotsql"
 	_"github.com/mattn/go-sqlite3"
 	"database/sql"
 	"errors"
@@ -14,7 +13,6 @@ type DataBase struct {
 	db *sql.DB
 	dbPath string
 	fileExists bool
-	executer *dotsql.DotSql
 }
 
 func CreateNewDataBase(dbPath string) (*DataBase, error) {
@@ -31,11 +29,7 @@ func CreateNewDataBase(dbPath string) (*DataBase, error) {
 		return nil, errors.New("Could not open the database." + ": " + err.Error())
 	}
 
-	return &DataBase{db, dbPath, fileExists, nil}, nil
-}
-
-func (database *DataBase) SetExecuter(executer *dotsql.DotSql) {
-	database.executer = executer
+	return &DataBase{db, dbPath, fileExists}, nil
 }
 
 func (database *DataBase) AddRola(rola *Rola, idperformer int64, idalbum int64) (int64, error) {
@@ -118,6 +112,6 @@ func (database *DataBase) PrepareStatement(statement string) (*sql.Tx, *sql.Stmt
 	return tx, stmt, nil
 }
 
-func (database *DataBase) Query(name string, args ...any) (*sql.Rows, error) {
-	return database.executer.Query(database.db, name, args)
+func (database *DataBase) Query(query string, args ...any) (*sql.Rows, error) {
+	return database.db.Query(query, args)
 }

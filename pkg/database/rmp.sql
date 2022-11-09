@@ -86,5 +86,5 @@ INSERT INTO persons (id_person, stage_name, real_name, birth_date, death_date) V
 -- name: insert-performer
 INSERT INTO performers (id_performer, id_type, name) VALUES (?, ?, ?)
 
--- name: find-users-by-email
+-- name: find-rolas-by-id
 SELECT * FROM rolas WHERE id_rola = ?

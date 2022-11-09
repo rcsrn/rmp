@@ -6,13 +6,14 @@ import (
 	"github.com/rcsrn/rmp/pkg/miner"
 	"fmt"
 	"os"
+	"github.com/lib/pq"
 )
 
 var testBuilder *database.Builder
 var testDataBase *database.DataBase
 
 func initBuilder() {
-	miner := miner.CreateNewMiner("/home/casarin/Escuela/Modelado/Proyectos/rmp/test/miner/TestRolas")
+	miner := miner.CreateNewMiner("/home/rodrigo/Escuela/Modelado/Proyectos/rmp/test/miner/TestRolas")
 	miner.Traverse()
 	miner.MineTags()
 	rolas := miner.GetRolas()
@@ -30,16 +31,14 @@ func TestBuildDataBase(t *testing.T) {
 	initBuilder()
 	testDataBase, err = testBuilder.BuildDataBase()
 	if err != nil || testDataBase == nil {
-		t.Errorf("this could not happen: " + err.Error())
+		t.Errorf("Could not build the database: " + err.Error())
 	}
-
-	fmt.Println(testDataBase)
-
-	query := "find-rolas-by-id"
 	
-	result, err := testDataBase.Query(query, 1)
+	query := `SELECT * FROM rolas WHERE id_rolas = ANY($1)`
+	
+	rows, err := testDataBase.Query(query, pq.Array([]int{1}))
 	if err != nil {
-		t.Errorf("this could not happen: " + err.Error())
+		t.Errorf("Could not get query: " + err.Error())
 	}
-	fmt.Println(result)
+	fmt.Println(rows )
 }

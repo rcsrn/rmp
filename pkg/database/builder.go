@@ -41,8 +41,6 @@ func (builder *Builder) BuildDataBase() (*DataBase, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	database.SetExecuter(executer)
 	
 	return database, nil
 }
