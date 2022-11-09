@@ -80,10 +80,16 @@ func (builder *Builder) poblateDataBase(database *DataBase) error {
 	id := 0
 	for _, rola := range(builder.rolas) {
 		err := builder.InsertRola(database, id, rola)
+		if err != nil {
+			return err
+		}
+		
 		err = builder.InsertPerformer(database, id, rola)
 		if err != nil {
 			return err
 		}
+
+		err = builder.InsertAlbum(database, id, rola)
 		id++
 	}
 	return nil
@@ -113,6 +119,14 @@ func (builder *Builder) InsertPerformer(database *DataBase, id int, rola *Rola) 
 		if err != nil {
 			return err
 		}
+	}
+	return nil
+}
+
+func (builder *Builder) InsertAlbum(database *DataBase, id int, rola *Rola) error {
+	_, err := builder.executer.Exec(database.db, "insert-album", id, rola.GetPath(), rola.GetAlbum(), rola.GetYear())
+	if err != nil {
+		return err
 	}
 	return nil
 }
