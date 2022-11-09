@@ -186,7 +186,7 @@ func (database *DataBase) ExistsPerformer(performerName string) (int64, error) {
 	
 	defer stmt.Close()
 	defer rows.Close()
-
+	
 	var id int64
 	for rows.Next() {
 		err := rows.Scan(&id)
