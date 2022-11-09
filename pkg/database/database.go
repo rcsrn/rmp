@@ -6,6 +6,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type DataBase struct {
@@ -136,17 +137,71 @@ func (database *DataBase) ExistsAlbum(albumPath, name string) (int64, error) {
 	return id, nil
 }
 
-func (database *DataBase) AddPerformer() {
+func (database *DataBase) AddPerformer(rola *Rola) (int64, error) {
+	idp, err := database.ExistsPerformer(rola.GetPerformer())
+	if err != nil {
+		return -1, err
+	}
 	
+	if idp > 0 {
+		return idp, nil
+	}
+
+	stmtStr := `INSERT
+                INTO performers (
+                  id_type,
+                  name)
+                SELECT ?, ?
+                WHERE NOT EXISTS
+                (SELECT 1 FROM performers WHERE name = ?)`
+
+	tx, stmt, err := database.PrepareStatement(stmtStr)
+	if err != nil {
+		return -1, err
+	}
+	defer stmt.Close()
+
+	id, err := stmt.Exec(2, strings.TrimSpace(rola.GetPerformer()), rola.GetPerformer())
+	if err != nil {
+		return -1, nil
+	}
+	tx.Commit()
+	lastId, err := id.LastInsertId()
+	if err != nil {
+		return -1, nil
+	}
+	return lastId, nil
 }
 
-func (database *DataBase) AddGroup() {
+func (database *DataBase) ExistsPerformer(performerName string) (int64, error) {
+	stmtStr := `SELECT
+                  id_performer
+                FROM performers
+                WHERE performers.name = ?
+                LIMIT 1`
+	tx, stmt, rows, err := database.PreparedQuery(stmtStr, performerName)
+	if err != nil {
+		return -1, err
+	}
 	
+	defer stmt.Close()
+	defer rows.Close()
+
+	var id int64
+	for rows.Next() {
+		err := rows.Scan(&id)
+		if err != nil {
+			return -1, err
+		}
+	}
+	err = rows.Err()
+	if err != nil {
+		return -1, err
+	}
+	tx.Commit()
+	return id, nil
 }
 
-func (database *DataBase) AddPerson() {
-	
-}
 
 func (database *DataBase) Load() error {
 	err := database.db.Ping()
