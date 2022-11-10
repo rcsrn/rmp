@@ -4,7 +4,7 @@ import (
 	"testing"
 	"github.com/rcsrn/rmp/pkg/database"
 	"github.com/rcsrn/rmp/pkg/miner"
-	_"fmt"
+	"fmt"
 	"os"
 	_"github.com/lib/pq"
 )
@@ -63,7 +63,6 @@ func TestAddRola(t *testing.T) {
 
 func TestAddPerformer(t *testing.T) {
 	rola := database.CreateNewRola()
-	rola.SetTitle("Rola2")
 	rola.SetPerformer("PerformerX")
 
 	idPerformer, err := testDataBase.AddPerformer(rola)
@@ -75,20 +74,31 @@ func TestAddPerformer(t *testing.T) {
 		t.Errorf("The performer was not in the database")
 	}
 
+	_, performerObtained, err := testDataBase.QueryPerformer(idPerformer)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
 	
+	if performerObtained != "PerformerX" {
+		t.Errorf("The performer obtained is not correctly.")
+	}
+	
+	if err != nil {
+		t.Errorf(err.Error())
+	}
 }
 
 func TestAddAlbum(t *testing.T) {
 	rola := database.CreateNewRola()
 	rola.SetAlbum("album1")
 
-	idAlbum, err := testDataBase.AddAlbum(rola)
+	idAlbum, err := testDataBase.AddAlbum(rola) 
 	if err != nil {
-		t.Errorf("The performer has not been added correctly" + err.Error())
+		t.Errorf("The album has not been added correctly" + err.Error())
 	}
 	
 	if idAlbum == -1 {
-		t.Errorf("The performer was not in the database")
+		t.Errorf("The album was not in the database")
 	}
 }
 
@@ -119,8 +129,10 @@ func TestExistAlbum (t *testing.T) {
 	idAlbum, err := testDataBase.ExistsAlbum("", albumName)
 
 	if err != nil {
-		t.Errorf("Could not retrieve the performer" + err.Error())
+		t.Errorf("Could not retrieve the album" + err.Error())
 	}
+
+	fmt.Println(idAlbum)
 	
 	if idAlbum == 0 {
 		t.Errorf("The album is already in the database")
