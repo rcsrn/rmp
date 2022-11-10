@@ -238,7 +238,7 @@ func (database *DataBase) PreparedQuery(statement string, args ...interface{}) (
 	return tx, stmt, rows, nil
 }
 
-func (database *DataBase) QueryPerformerByType(id int64) (int, string, error) {
+func (database *DataBase) QueryPerformer(id int64) (int, string, error) {
 	stmtStr := "SELECT " +
 		" performers.id_type, " +
 		" performers.name " +
