@@ -296,7 +296,7 @@ func (database *DataBase) QueryRola(rolaID int64) (*Rola, error) {
 	}
 	defer stmt.Close()
 	
-	rows, err := stmt.Query(rolaID)
+	rows, err := stmt.Query(idRola)
 	if err != nil {
 		return nil, err
 	}
@@ -319,6 +319,6 @@ func (database *DataBase) QueryRola(rolaID int64) (*Rola, error) {
 		return nil, err
 	}
 	tx.Commit()
-	return &Rola{rolaID, performer, album, "", title, track, year, genre}, nil
+	return &Rola{idRola, performer, album, "", title, track, year, genre}, nil
 }
 
