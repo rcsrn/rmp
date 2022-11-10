@@ -126,7 +126,7 @@ func TestExistAlbum (t *testing.T) {
 	rola.SetPath("")
 	testDataBase.AddAlbum(rola)
 
-	idAlbum, err := testDataBase.ExistsAlbum("", albumName)
+	idAlbum, err := testDataBase.ExistsAlbum(".", albumName)
 
 	if err != nil {
 		t.Errorf("Could not retrieve the album" + err.Error())
