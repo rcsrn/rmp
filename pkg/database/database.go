@@ -276,7 +276,7 @@ func (database *DataBase) QueryPerformerByType(id int64) (int, string, error) {
 	return performerType, name, nil
 }
 
-func (database *DataBase) QueryRola(rolaID int64) (*Rola, error) {
+func (database *DataBase) QueryRola(idRola int64) (*Rola, error) {
 	stmtStr := "SELECT " +
 		" performers.name, " +
 		" albums.name, " +
@@ -322,3 +322,44 @@ func (database *DataBase) QueryRola(rolaID int64) (*Rola, error) {
 	return &Rola{idRola, performer, album, "", title, track, year, genre}, nil
 }
 
+//QueryGeneralString takes a general string as a paramater an returns an array with //the id of all rolas that contain the string in its performer name, album nam//e, title or genre.
+func (database *DataBase) QueryGeneralString(general string) ([]int64, error) {
+	result := make([]int64, 0)
+	stmtStr := "SELECT " +
+		" rolas.id_rola " +
+		"FROM " +
+		" rolas " +
+		"INNER JOIN performers ON performers.id_performer = rolas.id_performer " +
+		"INNER JOIN albums ON albums.id_album = rolas.id_album " +
+		"WHERE " +
+		" performers.name LIKE ? " +
+		" OR albums.name LIKE ? " +
+		" OR rolas.title LIKE ? " +
+		" OR rolas.genre LIKE ?"
+
+	general = "%" + strings.TrimSpace(general) + "%"
+	tx, stmt, rows, err := database.PreparedQuery(stmtStr, general, general, general, general)
+
+	if err != nil {
+		return nil, err
+	}
+
+	
+	defer stmt.Close()
+	defer rows.Close()
+
+	for rows.Next() {
+		var id int64
+		err := rows.Scan(&id)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, id)
+	}
+	err = rows.Err()
+	if err != nil {
+		return nil, err
+	}
+	tx.Commit()
+	return result, nil
+}

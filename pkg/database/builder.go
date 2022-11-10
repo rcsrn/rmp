@@ -22,13 +22,13 @@ func (builder *Builder) BuildDataBase() (*DataBase, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	
 	executer, err := getExecuter()
 	if err != nil {
 		return nil, err
 	}
 	builder.executer = executer
-
+	
 	if !database.fileExists {
 		builder.buildDBFile(database)
 		err = builder.poblateDataBase(database)

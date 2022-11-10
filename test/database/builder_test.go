@@ -38,12 +38,26 @@ func TestBuildDataBase(t *testing.T) {
 func TestAddRola(t *testing.T) {
 	rola := database.CreateNewRola()
 	rola.SetTitle("Rola1")
-	id_rola, err := testDataBase.AddRola(rola, 1, 1)
+	idRola, err := testDataBase.AddRola(rola, 1, 1)
 	if err != nil {
 		t.Errorf("The song has not been added correctly." + err.Error())
 	}
-	if id_rola == -1 {
+	if idRola == -1 {
 		t.Errorf("The song was not in the database")
+	}
+	
+	rolaObtained, err := testDataBase.QueryRola(idRola)
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	if rolaObtained == nil {
+		t.Error("Could not get the song recently inserted")
+	}
+	
+	if rolaObtained.GetTitle() != "Rola1" {
+		t.Error("The rola has not been added correctly")
 	}
 }
 
@@ -60,6 +74,8 @@ func TestAddPerformer(t *testing.T) {
 	if idPerformer == -1 {
 		t.Errorf("The performer was not in the database")
 	}
+
+	
 }
 
 func TestAddAlbum(t *testing.T) {
