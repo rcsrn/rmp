@@ -237,3 +237,88 @@ func (database *DataBase) PreparedQuery(statement string, args ...interface{}) (
 	}
 	return tx, stmt, rows, nil
 }
+
+func (database *DataBase) QueryPerformerByType(id int64) (int, string, error) {
+	stmtStr := "SELECT " +
+		" performers.id_type, " +
+		" performers.name " +
+		"FROM " +
+		" performers " +
+		"INNER JOIN types ON types.id_type = performers.id_type " +
+		"WHERE " +
+		" performers.id_performer = ?"
+
+	tx, stmt, err := database.PrepareStatement(stmtStr)
+	if err != nil {
+		return -1, "", err
+	}
+	defer stmt.Close()
+	
+	rows, err := stmt.Query(id)
+	if err != nil {
+		return -1, "", err
+	}
+	defer rows.Close()
+
+	var performerType int
+	var name string
+	for rows.Next() {
+		err = rows.Scan(&performerType, &name)
+		if err != nil {
+			return -1, "", err
+		}
+	}
+	err = rows.Err()
+	if err != nil {
+		return -1, "", err
+	}
+	tx.Commit()
+	return performerType, name, nil
+}
+
+func (database *DataBase) QueryRola(rolaID int64) (*Rola, error) {
+	stmtStr := "SELECT " +
+		" performers.name, " +
+		" albums.name, " +
+		" rolas.title, " +
+		" rolas.track, " +
+		" rolas.year, " +
+		" rolas.genre " +
+		"FROM rolas " +
+		"INNER JOIN performers ON performers.id_performer = rolas.id_performer " +
+		"INNER JOIN albums ON albums.id_album = rolas.id_album " +
+		"WHERE " +
+		" rolas.id_rola = ?"
+	
+	tx, stmt, err := database.PrepareStatement(stmtStr)
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+	
+	rows, err := stmt.Query(rolaID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var performer string
+	var album string
+	var title string
+	var track int
+	var year int
+	var genre string
+	for rows.Next() {
+		err = rows.Scan(&performer, &album, &title, &track, &year, &genre)
+		if err != nil {
+			return nil, err
+		}
+	}
+	err = rows.Err()
+	if err != nil {
+		return nil, err
+	}
+	tx.Commit()
+	return &Rola{rolaID, performer, album, "", title, track, year, genre}, nil
+}
+
