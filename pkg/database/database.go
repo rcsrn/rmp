@@ -31,7 +31,10 @@ func CreateNewDataBase(dbPath string) (*DataBase, error) {
 	return &DataBase{db, dbPath, fileExists}, nil
 }
 
-func (database *DataBase) AddRola(rola *Rola, idperformer int64, idalbum int64) (int64, error) {
+
+//AddRola inserts a rola into the database using the idPerformer and idAlbum  //and returns the id associated to the rola added.
+//If the rolas was already in the databse AddRola returns -1.
+func (database *DataBase) AddRola(rola *Rola, idPerformer int64, idAlbum int64) (int64, error) {
 	stmtStr := `INSERT
                 INTO rolas (
                   id_performer,
@@ -55,8 +58,8 @@ func (database *DataBase) AddRola(rola *Rola, idperformer int64, idalbum int64) 
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(idperformer, idalbum, rola.GetPath(), rola.GetTitle(), rola.GetTrack(),
-		rola.GetYear(), rola.GetGenre(), rola.GetTitle(), idperformer, idalbum, rola.GetGenre(), rola.GetPath())
+	result, err := stmt.Exec(idPerformer, idAlbum, rola.GetPath(), rola.GetTitle(), rola.GetTrack(),
+		rola.GetYear(), rola.GetGenre(), rola.GetTitle(), idPerformer, idAlbum, rola.GetGenre(), rola.GetPath())
 	if err != nil {
 		return -1, errors.New("could not execute insert:" + err.Error())
 	}
@@ -81,7 +84,6 @@ func (database *DataBase) AddAlbum(rola *Rola) (int64, error) {
 		return -1, err
 	}
 
-	
 	if idalbum > 0 {
 		return idalbum, nil
 	}
@@ -234,8 +236,4 @@ func (database *DataBase) PreparedQuery(statement string, args ...interface{}) (
 		return nil, nil, nil, err
 	}
 	return tx, stmt, rows, nil
-}
-
-func (database *DataBase) Query(query string, args ...any) (*sql.Rows, error) {
-	return database.db.Query(query, args)
 }
