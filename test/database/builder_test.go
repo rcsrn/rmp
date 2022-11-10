@@ -131,8 +131,6 @@ func TestExistAlbum (t *testing.T) {
 	if err != nil {
 		t.Errorf("Could not retrieve the album" + err.Error())
 	}
-
-	fmt.Println(idAlbum)
 	
 	if idAlbum == 0 {
 		t.Errorf("The album is already in the database")
