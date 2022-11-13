@@ -2,11 +2,11 @@ package database
 
 import (
 	_"strings"
+	"fmt"
 )
 
 //Search Parser is the parser for specified search by user in the main
 //window of the application.
-//RequestProcessor
 type SearchParser struct {
 	request string
 }
@@ -18,15 +18,17 @@ func CreateNewSearchParser(request string) *SearchParser {
 func (parser *SearchParser) Parse() string {
 	words := splitStatement(parser.request)
 
-	query := "SELECT rolas.name FROM"
+	query := "SELECT name FROM (A)"
 	
 	for i := 0; len(words) > 0; i++ {
 		word := words[i]
 		if character := word[len(word) - 1]; character == ':' {
 			table := obtainTable(word)
 			queryString := obtainQueryString(words)
-
+			fmt.Println(queryString)
 			query += table
+		} else {
+			
 		}
 	}
 	return ""
@@ -42,10 +44,5 @@ func obtainTable(word string) string {
 
 func  obtainQueryString(words []string) string {
 	return ""
-}
-
-
-func isProcessable(request string) bool {
-	return false
 }
 
