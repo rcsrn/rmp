@@ -36,7 +36,7 @@ func (builder *Builder) BuildDataBase() (*DataBase, error) {
 			return nil, err
 		}
 	}	
-
+	
 	err = database.Load()
 	if err != nil {
 		return nil, err
@@ -60,7 +60,7 @@ func (builder *Builder) buildDBFile(database *DataBase) error{
 	nameTags = append(nameTags, CREATE+"albums"+TABLE)
 	nameTags = append(nameTags, CREATE+"rolas"+TABLE)
 	nameTags = append(nameTags, CREATE+"in_group"+TABLE)
-
+	
 	for _, query := range nameTags {
 		_, err := builder.executer.Exec(database.db, query)
 		if err != nil {

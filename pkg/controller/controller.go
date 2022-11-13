@@ -31,7 +31,7 @@ func obtainData() {
 	database, err := builder.BuildDataBase()
 	check(err)
 
-	fmt.Println(database.QueryGeneralString("Hola"))
+	fmt.Println(database.QueryGeneralString(""))
 }
 
 func check(err error) {
