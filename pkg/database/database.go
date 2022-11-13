@@ -343,7 +343,6 @@ func (database *DataBase) QueryGeneralString(general string) ([]int64, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	
 	defer stmt.Close()
 	defer rows.Close()

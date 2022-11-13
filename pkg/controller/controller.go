@@ -14,7 +14,6 @@ import (
 func Run() {
 	obtainData()
 	startView()
-	
 }
 
 func obtainData() {
@@ -31,12 +30,13 @@ func obtainData() {
 	builder := database.CreateNewBuilder(rolas, dbPath)
 	database, err := builder.BuildDataBase()
 	check(err)
-	fmt.Println(database)
+
+	fmt.Println(database.QueryGeneralString("Hola"))
 }
 
 func check(err error) {
 	if err != nil {
-	//it should show the error to user.
+		//it should show the error to user.
 		log.Fatal(err)
 	}
 }
