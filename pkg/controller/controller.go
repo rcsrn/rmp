@@ -50,6 +50,8 @@ func getDBPath() string{
 func startView() string {
 	handler := view.CreateNewWindowHandler()
 	handler.ShowLoadWindow()
+	handler.RunApp()
+	
 	return handler.GetFilePath()
 }
 

@@ -38,12 +38,15 @@ func (master *WindowHandler) ShowLoadWindow() {
 		master.filePath = input.Text
 	})
 
-	entryContent := container.New(layout.NewVBoxLayout(), input, loadButton)
-	
-	content := container.NewBorder(layout.NewSpacer(), layout.NewSpacer(), layout.NewSpacer(), layout.NewSpacer(), entryContent)
-	loadWindow.SetContent(content)
+	content := container.NewGridWithRows(3, layout.NewSpacer(), container.NewGridWithColumns(3, layout.NewSpacer(), container.NewVBox(input, loadButton), layout.NewSpacer()), layout.NewSpacer())
 
+	loadWindow.SetContent(content)
+	
 	loadWindow.Show()
+}
+
+
+func (master *WindowHandler) RunApp() {
 	master.app.Run()
 }
 
