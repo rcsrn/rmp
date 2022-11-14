@@ -5,7 +5,7 @@ import (
 	"github.com/rcsrn/rmp/pkg/miner"
 	"github.com/rcsrn/rmp/pkg/view"
 	"log"
-	"fmt"
+_	"fmt"
 	"os/user"
 	"os"
 	_"errors"
@@ -46,13 +46,14 @@ func (main *MainApp) obtainData() {
 	database, err := builder.BuildDataBase()
 	check(err)
 
-	fmt.Println(database.QueryGeneralString(""))
+	main.database = database
+
 }
 
 func (main *MainApp) startView() {
 	main.handler.ShowLoadWindow()
-	main.obtainFilePath()
 	main.handler.RunApp()
+	main.obtainFilePath()
 }
 
 func (main *MainApp) obtainFilePath() {

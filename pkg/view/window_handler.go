@@ -7,6 +7,7 @@ import (
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2"
 	_"log"
+	_"fmt"
 )
 
 type WindowHandler struct {
@@ -21,12 +22,12 @@ func CreateNewWindowHandler() *WindowHandler {
 	}
 }
 
-func (master *WindowHandler) GetFilePath() string {
-	return master.filePath
+func (handler *WindowHandler) GetFilePath() string {
+	return handler.filePath
 }
 
-func (master *WindowHandler) ShowLoadWindow() {
-	loadWindow := master.app.NewWindow("RMP")
+func (handler *WindowHandler) ShowLoadWindow() {
+	loadWindow := handler.app.NewWindow("RMP")
 	loadWindow.Resize(fyne.NewSize(800, 400))
 	loadWindow.SetMaster()
 
@@ -35,10 +36,16 @@ func (master *WindowHandler) ShowLoadWindow() {
 	
 	
 	loadButton := widget.NewButton("Load Files", func() {
-		master.filePath = input.Text
+		handler.filePath = input.Text
 	})
 
-	content := container.NewGridWithRows(3, layout.NewSpacer(), container.NewGridWithColumns(3, layout.NewSpacer(), container.NewVBox(input, loadButton), layout.NewSpacer()), layout.NewSpacer())
+	content := container.NewGridWithRows(3,
+		layout.NewSpacer(),
+		container.NewGridWithColumns(3,
+			layout.NewSpacer(),
+			container.NewVBox(input, loadButton),
+			layout.NewSpacer()),
+		layout.NewSpacer())
 
 	loadWindow.SetContent(content)
 	
@@ -46,7 +53,9 @@ func (master *WindowHandler) ShowLoadWindow() {
 }
 
 
-func (master *WindowHandler) RunApp() {
-	master.app.Run()
+func (handler *WindowHandler) RunApp() {
+	handler.app.Run()
 }
+
+
 
