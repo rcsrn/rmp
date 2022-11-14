@@ -12,12 +12,12 @@ import (
 )
 
 func Run() {
-	obtainData()
-	startView()
+	filePath := startView()
+	obtainData(filePath)
 }
 
-func obtainData() {
-	miner := miner.CreateNewMiner("/home/rodrigo/Escuela/Modelado/Proyectos/rmp/test/miner/TestRolas")
+func obtainData(filePath string) {
+	miner := miner.CreateNewMiner(filePath)
 
 	err := miner.Traverse()	
 	check(err)
@@ -47,9 +47,12 @@ func getDBPath() string{
 	return user.HomeDir + "/.local/rmp"
 }
 
-func startView() {
-	view.RunMainWindow()
+func startView() string {
+	handler := view.CreateNewWindowHandler()
+	handler.ShowLoadWindow()
+	return handler.GetFilePath()
 }
+
 
 func getCurrentPath() string {
 	current, _ := os.Getwd()
