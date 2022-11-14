@@ -34,13 +34,11 @@ func (handler *WindowHandler) ShowLoadWindow() {
 	input := widget.NewEntry()
 	input.SetPlaceHolder("Enter the directory")
 	
-	
 	loadButton := widget.NewButton("Load Files", func() {
 		if input.Text == "" || string(input.Text[0]) != "/" {
 			handler.use()
 		} else {
-		handler.filePath = input.Text
-		handler.ShowPrincipalWindow()
+			handler.filePath = input.Text
 			loadWindow.Close()
 		}
 	})
@@ -96,4 +94,22 @@ func (handler *WindowHandler) use() {
 	
 	useWindow.SetContent(content)
 	useWindow.Show()
+}
+
+func (handler *WindowHandler) ShowError(error string) {
+	errorMessage := widget.NewLabel(error)
+	
+	errorWindow :=  handler.app.NewWindow("ERROR")
+	errorWindow.Resize(fyne.NewSize(10, 5))
+	errorWindow.CenterOnScreen()
+	
+	content := container.NewGridWithRows(3,
+		layout.NewSpacer(),
+		container.NewGridWithColumns(1,
+			errorMessage),
+		layout.NewSpacer())
+
+	errorWindow.SetContent(content)
+
+	errorWindow.Show()
 }

@@ -35,16 +35,17 @@ func (main *MainApp) obtainData() {
 	miner := miner.CreateNewMiner(main.filePath)
 
 	err := miner.Traverse()	
-	check(err)
+	main.check(err)
 	
 	err = miner.MineTags()
-	check(err)
-	dbPath := getDBPath()
+	main.check(err)
+	
+	dbPath := main.getDBPath()
 	rolas := miner.GetRolas()
 	
 	builder := database.CreateNewBuilder(rolas, dbPath)
 	database, err := builder.BuildDataBase()
-	check(err)
+	main.check(err)
 
 	main.database = database
 
@@ -53,16 +54,20 @@ func (main *MainApp) obtainData() {
 func (main *MainApp) startView() {
 	main.handler.ShowLoadWindow()
 	main.handler.RunApp()
+	
 	main.obtainFilePath()
+	
+	main.handler.ShowPrincipalWindow()
+	main.handler.RunApp()
 }
 
 func (main *MainApp) obtainFilePath() {
 	main.filePath = main.handler.GetFilePath()
 }
 
-func getDBPath() string{
+func (main *MainApp) getDBPath() string{
 	user, err := user.Current()
-	check(err)
+	main.check(err)
 	return user.HomeDir + "/.local/rmp"
 }
 
@@ -75,9 +80,10 @@ func getMusicPath() string {
 	return ""
 }
 
-func check(err error) {
+func (main *MainApp) check(err error) {
 	if err != nil {
-		//it should show the error to user.
-		log.Fatal(err)
+		main.handler.ShowError(err.Error())
+		log.Print(err)
+		os.Exit(1)
 	}
 }
