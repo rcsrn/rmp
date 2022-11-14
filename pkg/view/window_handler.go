@@ -29,14 +29,20 @@ func (handler *WindowHandler) GetFilePath() string {
 func (handler *WindowHandler) ShowLoadWindow() {
 	loadWindow := handler.app.NewWindow("RMP")
 	loadWindow.Resize(fyne.NewSize(800, 400))
+	loadWindow.CenterOnScreen()
 
 	input := widget.NewEntry()
 	input.SetPlaceHolder("Enter the directory")
 	
 	
 	loadButton := widget.NewButton("Load Files", func() {
+		if input.Text == "" || string(input.Text[0]) != "/" {
+			handler.use()
+		} else {
 		handler.filePath = input.Text
 		handler.ShowPrincipalWindow()
+			loadWindow.Close()
+		}
 	})
 
 	content := container.NewGridWithRows(3,
@@ -61,6 +67,7 @@ func (handler *WindowHandler) ShowPrincipalWindow() {
 	principalWindow := handler.app.NewWindow("RMP")
 	principalWindow.Resize(fyne.NewSize(800, 400))
 	principalWindow.SetMaster()
+	principalWindow.CenterOnScreen()
 
 	searchBar := widget.NewEntry()
 	searchBar.SetPlaceHolder("Search...")
@@ -72,4 +79,21 @@ func (handler *WindowHandler) ShowPrincipalWindow() {
 	principalWindow.SetContent(content)
 	
 	principalWindow.Show()
+}
+
+func (handler *WindowHandler) use() {
+	use := widget.NewLabel("please enter a valid path directory")
+	
+	useWindow := handler.app.NewWindow("Warning")
+	useWindow.Resize(fyne.NewSize(10, 5))
+	useWindow.CenterOnScreen()
+
+	content := container.NewGridWithRows(3,
+		layout.NewSpacer(),
+		container.NewGridWithColumns(1,
+			use),
+		layout.NewSpacer())
+	
+	useWindow.SetContent(content)
+	useWindow.Show()
 }
