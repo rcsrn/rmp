@@ -11,13 +11,28 @@ import (
 	_"errors"
 )
 
-func Run() {
-	filePath := startView()
-	obtainData(filePath)
+type MainApp struct {
+	handler *view.WindowHandler
+	database *database.DataBase
+	filePath string
 }
 
-func obtainData(filePath string) {
-	miner := miner.CreateNewMiner(filePath)
+func createMainApp() *MainApp {
+	return &MainApp{
+		handler: view.CreateNewWindowHandler(),
+		database: nil,
+		filePath: "",
+	}
+}
+
+func Run() {
+	main := createMainApp()
+	main.startView()
+	main.obtainData()
+}
+
+func (main *MainApp) obtainData() {
+	miner := miner.CreateNewMiner(main.filePath)
 
 	err := miner.Traverse()	
 	check(err)
@@ -34,11 +49,14 @@ func obtainData(filePath string) {
 	fmt.Println(database.QueryGeneralString(""))
 }
 
-func check(err error) {
-	if err != nil {
-		//it should show the error to user.
-		log.Fatal(err)
-	}
+func (main *MainApp) startView() {
+	main.handler.ShowLoadWindow()
+	main.obtainFilePath()
+	main.handler.RunApp()
+}
+
+func (main *MainApp) obtainFilePath() {
+	main.filePath = main.handler.GetFilePath()
 }
 
 func getDBPath() string{
@@ -47,15 +65,6 @@ func getDBPath() string{
 	return user.HomeDir + "/.local/rmp"
 }
 
-func startView() string {
-	handler := view.CreateNewWindowHandler()
-	handler.ShowLoadWindow()
-	handler.RunApp()
-	
-	return handler.GetFilePath()
-}
-
-
 func getCurrentPath() string {
 	current, _ := os.Getwd()
 	return current
@@ -63,4 +72,11 @@ func getCurrentPath() string {
 
 func getMusicPath() string {
 	return ""
+}
+
+func check(err error) {
+	if err != nil {
+		//it should show the error to user.
+		log.Fatal(err)
+	}
 }
