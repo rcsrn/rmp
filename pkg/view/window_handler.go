@@ -29,7 +29,6 @@ func (handler *WindowHandler) GetFilePath() string {
 func (handler *WindowHandler) ShowLoadWindow() {
 	loadWindow := handler.app.NewWindow("RMP")
 	loadWindow.Resize(fyne.NewSize(800, 400))
-	loadWindow.SetMaster()
 
 	input := widget.NewEntry()
 	input.SetPlaceHolder("Enter the directory")
@@ -37,6 +36,7 @@ func (handler *WindowHandler) ShowLoadWindow() {
 	
 	loadButton := widget.NewButton("Load Files", func() {
 		handler.filePath = input.Text
+		handler.ShowPrincipalWindow()
 	})
 
 	content := container.NewGridWithRows(3,
@@ -57,5 +57,19 @@ func (handler *WindowHandler) RunApp() {
 	handler.app.Run()
 }
 
+func (handler *WindowHandler) ShowPrincipalWindow() {
+	principalWindow := handler.app.NewWindow("RMP")
+	principalWindow.Resize(fyne.NewSize(800, 400))
+	principalWindow.SetMaster()
 
+	searchBar := widget.NewEntry()
+	searchBar.SetPlaceHolder("Search...")
 
+	top := container.NewVBox(searchBar)
+	
+	content := container.NewBorder(top, nil, nil, nil)
+
+	principalWindow.SetContent(content)
+	
+	principalWindow.Show()
+}
