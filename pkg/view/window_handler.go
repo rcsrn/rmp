@@ -115,15 +115,17 @@ func (handler *WindowHandler) ShowPrincipalWindow() {
 	})
 
 	musicBar := handler.createMusicBar()
+	volumeBar := handler.createVolumeBar()
 	
 	bottom := container.NewGridWithRows(2,
-		container.NewGridWithColumns(6,
+		container.NewGridWithColumns(7,
 			backButton,
 			playButton,
 			nextButton,
 			muteButton,
 			stopButton,
-			loopButton),
+			loopButton,
+			volumeBar),
 		musicBar)
 	
 	content := container.NewBorder(top, bottom, nil, nil)
@@ -140,6 +142,17 @@ func (handler *WindowHandler) createMusicBar() *fyne.Container {
 
 	sliderHolder := container.NewBorder(nil, nil, currentTime, endTime, progressSlider)
 	return sliderHolder
+}
+
+func (handler *WindowHandler) createVolumeBar() *widget.Slider {
+	volumeSlider := widget.NewSlider(0, 100)
+	volumeSlider.Orientation = widget.Horizontal
+	return volumeSlider
+}
+
+
+func (handler *WindowHandler) createDisplay(information []string) *fyne.Container {
+	return nil
 }
 
 
