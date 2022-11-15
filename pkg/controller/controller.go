@@ -15,6 +15,7 @@ type MainApp struct {
 	handler *view.WindowHandler
 	database *database.DataBase
 	filePath string
+	errorThrown bool
 }
 
 func createMainApp() *MainApp {
@@ -22,6 +23,7 @@ func createMainApp() *MainApp {
 		handler: view.CreateNewWindowHandler(),
 		database: nil,
 		filePath: "",
+		errorThrown: false,
 	}
 }
 
@@ -30,7 +32,8 @@ func Run() {
 	main.startView()	
 }
 
-func (main *MainApp) obtainData() {
+func (main *MainApp) obtainData()  {
+	main.errorThrown = false
 	miner := miner.CreateNewMiner(main.filePath)
 
 	err := miner.Traverse()	
@@ -57,7 +60,6 @@ func (main *MainApp) startView() {
 	main.handler.RunApp()
 	
 	fmt.Print(main.filePath)
-	
 }
 
 
@@ -70,7 +72,9 @@ func (main *MainApp) addFunctionsToButtons() {
 		} else {
 			main.filePath = format
 			main.obtainData()
-			
+			if !main.errorThrown {
+				main.handler.InitializePrincipalWindow()
+			}
 		}
 	})
 }
@@ -101,7 +105,7 @@ func getMusicPath() string {
 func (main *MainApp) check(err error) {
 	if err != nil {
 		main.handler.ShowError(err.Error())
-		log.Print(err)
-		os.Exit(1)
+		main.errorThrown = true
+		log.Print(err)		
 	}
 }
