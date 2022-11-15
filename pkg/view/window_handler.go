@@ -15,6 +15,7 @@ import (
 type WindowHandler struct {
 	filePath string
 	app fyne.App
+	
 }
 
 func CreateNewWindowHandler() *WindowHandler {

@@ -48,7 +48,6 @@ func (main *MainApp) obtainData() {
 	main.check(err)
 
 	main.database = database
-
 }
 
 func (main *MainApp) startView() {
