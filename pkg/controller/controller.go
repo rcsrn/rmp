@@ -55,7 +55,7 @@ func (main *MainApp) obtainData()  {
 func (main *MainApp) startView() {
 	
 	main.handler.InitializeWindow()
-	main.addFunctionsToButtons()
+	main.addLoadEvent()
 
 	main.handler.RunApp()
 	
@@ -63,7 +63,7 @@ func (main *MainApp) startView() {
 }
 
 
-func (main *MainApp) addFunctionsToButtons() {
+func (main *MainApp) addLoadEvent() {
 	main.handler.OnLoad(func() {
 		format := main.handler.GetLoadText()
 		
@@ -74,10 +74,38 @@ func (main *MainApp) addFunctionsToButtons() {
 			main.obtainData()
 			if !main.errorThrown {
 				main.handler.InitializePrincipalWindow()
+				main.addPrincipalEvents()
 			}
 		}
 	})
 }
+
+func (main *MainApp) addPrincipalEvents() {
+	main.handler.OnBack(func() {
+		
+	})
+	
+	main.handler.OnPlay(func() {
+		
+	})
+
+	main.handler.OnNext(func() {
+		
+	})
+	
+	main.handler.OnMute(func() {
+		
+	})
+	
+	main.handler.OnLoop(func() {
+		
+	})
+
+	main.handler.OnStop(func() {
+		
+	})
+}
+
 
 func (main *MainApp) isDirectoryPathFormat(format string) bool {
 	if format == "" || string(format[0]) != "/" {

@@ -228,11 +228,30 @@ func (handler *WindowHandler) ChangeLoopButtonIcon() int {
 	
 }
 
+func (handler *WindowHandler) OnLoad(action func()) {
+	handler.loadButton.OnTapped = action
+}
+
+func (handler *WindowHandler) OnBack(action func()) {
+	handler.backButton.OnTapped = action
+}
 
 func (handler *WindowHandler) OnPlay(action func()) {
 	handler.playButton.OnTapped = action
 }
 
-func (handler *WindowHandler) OnLoad(action func()) {
-	handler.loadButton.OnTapped = action
+func (handler *WindowHandler) OnNext(action func()) {
+	handler.nextButton.OnTapped = action
+}
+
+func (handler *WindowHandler) OnMute(action func()) {
+	handler.muteButton.OnTapped = action
+}
+
+func (handler *WindowHandler) OnLoop(action func()) {
+	handler.loopButton.OnTapped = action
+}
+
+func (handler *WindowHandler) OnStop(action func()) {
+	handler.stopButton.OnTapped = action
 }
