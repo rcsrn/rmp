@@ -1,7 +1,7 @@
 package view
 
 import (
-	_"github.com/rcsrn/rmp/internal/res"
+	"github.com/rcsrn/rmp/internal/res"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/widget"
 	"fyne.io/fyne/v2/container"
@@ -202,7 +202,7 @@ func (handler *WindowHandler) createControls() *fyne.Container {
 // 	})
 // 	stopButton := widget.NewButtonWithIcon("", theme.MediaStopIcon(), func() {})
 // 	loopButton = widget.NewButtonWithIcon("", theme.MediaReplayIcon(), func() {
-// 		var icon *fyne.StaticResource = res.ResourceRepeatLightPng
+ // 		var icon *fyne.StaticResource = res.ResourceRepeatLightPng
 
 // 		if loopButton.Icon == theme.MediaReplayIcon() {
 // 			loopButton.SetIcon(icon)
@@ -301,14 +301,39 @@ func (handler *WindowHandler) ShowError(error string) {
 	handler.app.Quit()
 }
 
-
 func (handler *WindowHandler) ChangePlayButtonIcon() int {
 	if handler.playButton.Icon == theme.MediaPlayIcon() {
 		handler.playButton.SetIcon(theme.MediaPauseIcon())
+		return 0
 	} else {
 		handler.playButton.SetIcon(theme.MediaPlayIcon())
+		return 1
 	}
 }
+
+func (handler *WindowHandler) ChangeMuteButtonIcon() int {
+	if handler.muteButton.Icon == theme.VolumeUpIcon() {
+		handler.muteButton.SetIcon(theme.VolumeMuteIcon())
+		return 0
+	} else {
+		handler.muteButton.SetIcon(theme.VolumeUpIcon())
+		return 1
+	}
+}
+
+func (handler *WindowHandler) ChangeLoopButtonIcon() int {
+	var icon *fyne.StaticResource = res.ResourceRepeatLightPng
+	
+	if handler.loopButton.Icon == theme.MediaReplayIcon() {
+		handler.loopButton.SetIcon(icon)
+		return 0
+	} else {
+		handler.loopButton.SetIcon(theme.MediaReplayIcon())
+		return 1
+	}
+	
+}
+
 
 func (handler *WindowHandler) OnPlay(action func()) {
 	handler.playButton.OnTapped = action
