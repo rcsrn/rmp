@@ -1,6 +1,7 @@
 package view
 
 import (
+	"github.com/rcsrn/rmp/internal/res"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/widget"
 	"fyne.io/fyne/v2/container"
@@ -77,6 +78,7 @@ func (handler *WindowHandler) ShowPrincipalWindow() {
 
 	var playButton *widget.Button
 	var muteButton *widget.Button
+	var loopButton *widget.Button
 	
 	playButton = widget.NewButtonWithIcon("", theme.MediaPlayIcon(), func() {
 		if playButton.Icon == theme.MediaPlayIcon() {
@@ -102,7 +104,15 @@ func (handler *WindowHandler) ShowPrincipalWindow() {
 		}
 	})
 	stopButton := widget.NewButtonWithIcon("", theme.MediaStopIcon(), func() {})
-	loopButton := widget.NewButtonWithIcon("", theme.MediaReplayIcon(), func() {})
+	loopButton = widget.NewButtonWithIcon("", theme.MediaReplayIcon(), func() {
+		var icon *fyne.StaticResource = res.ResourceRepeatLightPng
+
+		if loopButton.Icon == theme.MediaReplayIcon() {
+			loopButton.SetIcon(icon)
+		} else {
+			loopButton.SetIcon(theme.MediaReplayIcon())
+		}
+	})
 
 	
 	bottom := container.NewGridWithRows(2,
