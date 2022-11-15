@@ -285,6 +285,7 @@ func (handler *WindowHandler) Use() {
 		layout.NewSpacer())
 	
 	useWindow.SetContent(content)
+	useWindow.Show()
 }
 
 func (handler *WindowHandler) ShowError(error string) {
