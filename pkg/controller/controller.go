@@ -27,13 +27,7 @@ func createMainApp() *MainApp {
 
 func Run() {
 	main := createMainApp()
-	main.startView()
-	main.handler.OnPlay(func() {
-		fmt.Println("FUNCIONA")
-	})
-
-	
-	main.obtainData()
+	main.startView()	
 }
 
 func (main *MainApp) obtainData() {
@@ -56,18 +50,38 @@ func (main *MainApp) obtainData() {
 }
 
 func (main *MainApp) startView() {
-	main.handler.ShowLoadWindow()
+	
+	main.handler.InitializeWindow()
+	main.addFunctionsToButtons()
 
 	main.handler.RunApp()
 	
-	main.obtainFilePath()
 	fmt.Print(main.filePath)
 	
 }
 
-func (main *MainApp) obtainFilePath() {
-	main.filePath = main.handler.GetFilePath()
+
+func (main *MainApp) addFunctionsToButtons() {
+	main.handler.OnLoad(func() {
+		format := main.handler.GetLoadText()
+		
+		if !main.isDirectoryPathFormat(format) {
+			main.handler.Use()
+		} else {
+			main.filePath = format
+			main.obtainData()
+			
+		}
+	})
 }
+
+func (main *MainApp) isDirectoryPathFormat(format string) bool {
+	if format == "" || string(format[0]) != "/" {
+		return false
+	}
+	return true
+}
+
 
 func (main *MainApp) getDBPath() string{
 	user, err := user.Current()

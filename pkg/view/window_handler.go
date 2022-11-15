@@ -16,6 +16,7 @@ type WindowHandler struct {
 	filePath    string
 	app         fyne.App
 	window      fyne.Window
+	loadHolder  *widget.Entry
 	playButton  *widget.Button
 	loadButton  *widget.Button
 	muteButton  *widget.Button
@@ -31,6 +32,7 @@ func CreateNewWindowHandler() *WindowHandler {
 	return &WindowHandler{
 		filePath: "" ,
 		app: app.New(),
+		loadHolder: nil,
 		window: nil,
 		playButton: nil,
 		loadButton: nil,
@@ -56,6 +58,8 @@ func (handler *WindowHandler) InitializeWindow() {
 	
 	input := widget.NewEntry()
 	input.SetPlaceHolder("Enter the directory")
+
+	handler.loadHolder = input
 	
 	loadButton := widget.NewButton("Load Files", func() {})
 
@@ -111,7 +115,7 @@ func (handler *WindowHandler) InitializeWindow() {
 
 
 func (handler *WindowHandler) RunApp() {
-	handler.app.Run()
+	handler.window.ShowAndRun()
 }
 
 
@@ -160,6 +164,9 @@ func (handler *WindowHandler) createControls() *fyne.Container {
 	)
 }
 
+func (handler *WindowHandler) GetLoadText() string{
+	return handler.loadHolder.Text
+}
 
 // func (handler *WindowHandler) ShowPrincipalWindow() {
 
@@ -264,7 +271,7 @@ func (handler *WindowHandler) createDisplay(information []string) *fyne.Containe
 }
 
 
-func (handler *WindowHandler) use() {
+func (handler *WindowHandler) Use() {
 	use := widget.NewLabel("please enter a valid path directory")
 	
 	useWindow := handler.app.NewWindow("Warning")
@@ -278,7 +285,6 @@ func (handler *WindowHandler) use() {
 		layout.NewSpacer())
 	
 	useWindow.SetContent(content)
-	useWindow.Show()
 }
 
 func (handler *WindowHandler) ShowError(error string) {
@@ -337,4 +343,8 @@ func (handler *WindowHandler) ChangeLoopButtonIcon() int {
 
 func (handler *WindowHandler) OnPlay(action func()) {
 	handler.playButton.OnTapped = action
+}
+
+func (handler *WindowHandler) OnLoad(action func()) {
+	handler.loadButton.OnTapped = action
 }
