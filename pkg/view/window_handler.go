@@ -76,6 +76,7 @@ func (handler *WindowHandler) ShowPrincipalWindow() {
 	top := container.NewVBox(searchBar)
 
 	var playButton *widget.Button
+	var muteButton *widget.Button
 	
 	playButton = widget.NewButtonWithIcon("", theme.MediaPlayIcon(), func() {
 		if playButton.Icon == theme.MediaPlayIcon() {
@@ -90,14 +91,28 @@ func (handler *WindowHandler) ShowPrincipalWindow() {
 	})
 
 	nextButton := widget.NewButtonWithIcon("", theme.MediaSkipNextIcon(), func() {
-
+		
 	})
+
+	muteButton = widget.NewButtonWithIcon("", theme.VolumeUpIcon(), func() {
+		if muteButton.Icon == theme.VolumeUpIcon() {
+			muteButton.SetIcon(theme.VolumeMuteIcon())
+		} else {
+			muteButton.SetIcon(theme.VolumeUpIcon())
+		}
+	})
+	stopButton := widget.NewButtonWithIcon("", theme.MediaStopIcon(), func() {})
+	loopButton := widget.NewButtonWithIcon("", theme.MediaReplayIcon(), func() {})
+
 	
-	bottom := container.NewGridWithColumns(2,
-		container.NewGridWithColumns(3,
+	bottom := container.NewGridWithRows(2,
+		container.NewGridWithColumns(6,
 			backButton,
 			playButton,
-			nextButton),
+			nextButton,
+			muteButton,
+			stopButton,
+			loopButton),
 		widget.NewLabel("BARRA"))
 	
 	content := container.NewBorder(top, bottom, nil, nil)

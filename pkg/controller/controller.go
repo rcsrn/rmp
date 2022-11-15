@@ -87,3 +87,4 @@ func (main *MainApp) check(err error) {
 		os.Exit(1)
 	}
 }
+
