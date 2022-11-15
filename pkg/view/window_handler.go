@@ -4,6 +4,7 @@ import (
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/widget"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2"
 	_"log"
@@ -39,6 +40,7 @@ func (handler *WindowHandler) ShowLoadWindow() {
 			handler.use()
 		} else {
 			handler.filePath = input.Text
+			handler.ShowPrincipalWindow()
 			loadWindow.Close()
 		}
 	})
@@ -62,6 +64,7 @@ func (handler *WindowHandler) RunApp() {
 }
 
 func (handler *WindowHandler) ShowPrincipalWindow() {
+	
 	principalWindow := handler.app.NewWindow("RMP")
 	principalWindow.Resize(fyne.NewSize(800, 400))
 	principalWindow.SetMaster()
@@ -71,8 +74,33 @@ func (handler *WindowHandler) ShowPrincipalWindow() {
 	searchBar.SetPlaceHolder("Search...")
 
 	top := container.NewVBox(searchBar)
+
+	var playButton *widget.Button
 	
-	content := container.NewBorder(top, nil, nil, nil)
+	playButton = widget.NewButtonWithIcon("", theme.MediaPlayIcon(), func() {
+		if playButton.Icon == theme.MediaPlayIcon() {
+			playButton.SetIcon(theme.MediaPauseIcon())
+		} else {
+			playButton.SetIcon(theme.MediaPlayIcon())
+		}
+	})
+
+	backButton := widget.NewButtonWithIcon("", theme.MediaSkipPreviousIcon(), func() {
+
+	})
+
+	nextButton := widget.NewButtonWithIcon("", theme.MediaSkipNextIcon(), func() {
+
+	})
+	
+	bottom := container.NewGridWithColumns(2,
+		container.NewGridWithColumns(3,
+			backButton,
+			playButton,
+			nextButton),
+		widget.NewLabel("BARRA"))
+	
+	content := container.NewBorder(top, bottom, nil, nil)
 
 	principalWindow.SetContent(content)
 	
@@ -112,4 +140,6 @@ func (handler *WindowHandler) ShowError(error string) {
 	errorWindow.SetContent(content)
 
 	errorWindow.Show()
+
+	handler.app.Quit()
 }

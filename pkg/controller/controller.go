@@ -5,7 +5,7 @@ import (
 	"github.com/rcsrn/rmp/pkg/miner"
 	"github.com/rcsrn/rmp/pkg/view"
 	"log"
-_	"fmt"
+	"fmt"
 	"os/user"
 	"os"
 	_"errors"
@@ -53,12 +53,12 @@ func (main *MainApp) obtainData() {
 
 func (main *MainApp) startView() {
 	main.handler.ShowLoadWindow()
+	
 	main.handler.RunApp()
 	
 	main.obtainFilePath()
+	fmt.Print(main.filePath)
 	
-	main.handler.ShowPrincipalWindow()
-	main.handler.RunApp()
 }
 
 func (main *MainApp) obtainFilePath() {
