@@ -114,6 +114,7 @@ func (handler *WindowHandler) ShowPrincipalWindow() {
 		}
 	})
 
+	musicBar := handler.createMusicBar()
 	
 	bottom := container.NewGridWithRows(2,
 		container.NewGridWithColumns(6,
@@ -123,7 +124,7 @@ func (handler *WindowHandler) ShowPrincipalWindow() {
 			muteButton,
 			stopButton,
 			loopButton),
-		widget.NewLabel("BARRA"))
+		musicBar)
 	
 	content := container.NewBorder(top, bottom, nil, nil)
 
@@ -131,6 +132,16 @@ func (handler *WindowHandler) ShowPrincipalWindow() {
 	
 	principalWindow.Show()
 }
+
+func (handler *WindowHandler) createMusicBar() *fyne.Container {
+	progressSlider := widget.NewSlider(0, 100)
+	currentTime := widget.NewLabel("00:00")
+	endTime := widget.NewLabel("00:00")
+
+	sliderHolder := container.NewBorder(nil, nil, currentTime, endTime, progressSlider)
+	return sliderHolder
+}
+
 
 func (handler *WindowHandler) use() {
 	use := widget.NewLabel("please enter a valid path directory")
