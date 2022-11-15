@@ -28,6 +28,11 @@ func createMainApp() *MainApp {
 func Run() {
 	main := createMainApp()
 	main.startView()
+	main.handler.OnPlay(func() {
+		fmt.Println("FUNCIONA")
+	})
+
+	
 	main.obtainData()
 }
 
@@ -52,7 +57,7 @@ func (main *MainApp) obtainData() {
 
 func (main *MainApp) startView() {
 	main.handler.ShowLoadWindow()
-	
+
 	main.handler.RunApp()
 	
 	main.obtainFilePath()
@@ -86,4 +91,3 @@ func (main *MainApp) check(err error) {
 		os.Exit(1)
 	}
 }
-

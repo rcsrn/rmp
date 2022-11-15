@@ -9,19 +9,32 @@ import (
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2"
 	_"log"
-	_"fmt"
+	"fmt"
 )
 
 type WindowHandler struct {
 	filePath string
 	app fyne.App
-	
+	playButton *widget.Button
+	loadButton *widget.Button
+	muteButton *widget.Button
+	backButton *widget.Button
+	nextButton *widget.Button
+	loopButton *widget.Button
+	stopButton *widget.Button
 }
 
 func CreateNewWindowHandler() *WindowHandler {
 	return &WindowHandler{
 		filePath: "" ,
 		app: app.New(),
+		playButton: nil,
+		loadButton: nil,
+		muteButton: nil,
+		backButton: nil,
+		nextButton: nil,
+		loopButton: nil,
+		stopButton: nil,
 	}
 }
 
@@ -47,6 +60,8 @@ func (handler *WindowHandler) ShowLoadWindow() {
 		}
 	})
 
+	handler.loadButton = loadButton
+	
 	content := container.NewGridWithRows(3,
 		layout.NewSpacer(),
 		container.NewGridWithColumns(3,
@@ -56,6 +71,8 @@ func (handler *WindowHandler) ShowLoadWindow() {
 		layout.NewSpacer())
 
 	loadWindow.SetContent(content)
+
+	fmt.Println(loadButton.OnTapped)
 	
 	loadWindow.Show()
 }
@@ -114,6 +131,13 @@ func (handler *WindowHandler) ShowPrincipalWindow() {
 			loopButton.SetIcon(theme.MediaReplayIcon())
 		}
 	})
+
+	handler.playButton = playButton
+	handler.muteButton = muteButton
+	handler.backButton = backButton
+	handler.nextButton = nextButton
+	handler.loopButton = loopButton
+	handler.stopButton = stopButton
 
 	musicBar := handler.createMusicBar()
 	volumeBar := handler.createVolumeBar()
@@ -192,4 +216,8 @@ func (handler *WindowHandler) ShowError(error string) {
 	errorWindow.Show()
 
 	handler.app.Quit()
+}
+
+func (handler *WindowHandler) OnPlay(action func()) {
+	handler.playButton.OnTapped = action
 }
