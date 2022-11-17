@@ -19,6 +19,8 @@ type MainApp struct {
 }
 
 func createMainApp() *MainApp {
+	
+	
 	return &MainApp{
 		handler: view.CreateNewWindowHandler(),
 		database: nil,
@@ -70,6 +72,7 @@ func (main *MainApp) addLoadEvent() {
 		if !main.isDirectoryPathFormat(format) {
 			main.handler.Use()
 		} else {
+			
 			main.filePath = format
 			main.obtainData()
 			if !main.errorThrown {

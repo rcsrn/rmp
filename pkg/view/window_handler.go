@@ -81,7 +81,6 @@ func (handler *WindowHandler) RunApp() {
 	handler.window.ShowAndRun()
 }
 
-
 func (handler *WindowHandler) InitializePrincipalWindow() {
 	principalWindow := handler.app.NewWindow("RMP")
 	principalWindow.Resize(fyne.NewSize(800, 400))
@@ -192,7 +191,6 @@ func (handler *WindowHandler) ShowError(error string) {
 	errorWindow.SetContent(content)
 
 	errorWindow.Show()
-
 }
 
 func (handler *WindowHandler) ChangePlayButtonIcon() int {
@@ -254,4 +252,15 @@ func (handler *WindowHandler) OnLoop(action func()) {
 
 func (handler *WindowHandler) OnStop(action func()) {
 	handler.stopButton.OnTapped = action
+}
+
+func (handler *WindowHandler) ChangePlayButton(isPlaying bool) {
+	
+}
+
+func (handler *WindowHandler) ChangeMuteButton(isMuted bool) {
+	
+}
+
+func (handler *WindowHandler) ChangeLoopButton(isLoop bool) {
 }
