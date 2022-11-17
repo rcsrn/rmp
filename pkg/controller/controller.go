@@ -15,6 +15,7 @@ type MainApp struct {
 	handler *view.WindowHandler
 	database *database.DataBase
 	filePath string
+	miner *miner.Miner
 	errorThrown bool
 }
 
@@ -25,6 +26,7 @@ func createMainApp() *MainApp {
 		handler: view.CreateNewWindowHandler(),
 		database: nil,
 		filePath: "",
+		miner: nil,
 		errorThrown: false,
 	}
 }
@@ -37,6 +39,7 @@ func Run() {
 func (main *MainApp) obtainData()  {
 	main.errorThrown = false
 	miner := miner.CreateNewMiner(main.filePath)
+	main.miner = miner
 
 	err := miner.Traverse()	
 	main.check(err)
@@ -76,6 +79,10 @@ func (main *MainApp) addLoadEvent() {
 			main.obtainData()
 			if !main.errorThrown {
 				main.handler.CloseLoadWindow()
+				
+				playList := main.obtainPlayList()
+				main.handler.SetPlayList(playList)
+				
 				main.handler.InitializePrincipalWindow()
 				main.addPrincipalEvents()
 			}
@@ -139,4 +146,17 @@ func (main *MainApp) check(err error) {
 		main.errorThrown = true
 		log.Print(err)		
 	}
+}
+
+func (main *MainApp) obtainPlayList() *[]string {
+	playList := make([]string, 0)
+
+	rolas := main.miner.GetRolas()
+
+	for _, rola := range(rolas) {
+		title := rola.GetTitle()
+		playList = append(playList, title)	
+	}
+	fmt.Println(playList)
+	return &playList
 }

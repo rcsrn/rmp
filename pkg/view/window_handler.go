@@ -3,6 +3,7 @@ package view
 import (
 	"github.com/rcsrn/rmp/internal/res"
 	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/widget"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
@@ -26,6 +27,7 @@ type WindowHandler struct {
 	stopButton  *widget.Button
 	volumeBar   *widget.Slider
 	musicSlider *widget.Slider
+	playList    *[]string
 }
 
 func CreateNewWindowHandler() *WindowHandler {
@@ -48,6 +50,10 @@ func CreateNewWindowHandler() *WindowHandler {
 
 func (handler *WindowHandler) GetFilePath() string {
 	return handler.filePath
+}
+
+func (handler *WindowHandler) SetPlayList(playList *[]string) {
+	handler.playList = playList
 }
 
 
@@ -99,7 +105,9 @@ func (handler *WindowHandler) InitializePrincipalWindow() {
 		controls,
 		musicBar)
 
-	content := container.NewBorder(top, bottom, nil, nil)
+	center := handler.createPlayList(handler.playList)
+	
+	content := container.NewBorder(top, bottom, nil, nil, center)
 	
 	principalWindow.SetContent(content)
 
@@ -153,8 +161,17 @@ func (handler *WindowHandler) createVolumeBar() *widget.Slider {
 }
 
 
-func (handler *WindowHandler) createDisplay(information []string) *fyne.Container {
-	return nil
+func (handler *WindowHandler) createPlayList(nameSongs *[]string) *widget.List {
+	data := binding.BindStringList(nameSongs)
+	
+	playList := widget.NewListWithData(data,
+		func() fyne.CanvasObject {
+			return widget.NewLabel("template")
+		},
+		func(i binding.DataItem, o fyne.CanvasObject) {
+			o.(*widget.Label).Bind(i.(binding.String))
+		})
+	return playList
 }
 
 
