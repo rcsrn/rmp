@@ -74,7 +74,7 @@ func (builder *Builder) buildDBFile(database *DataBase) error{
 }
 
 func (builder *Builder) poblateDataBase(database *DataBase) error {
-	id := 1
+	id := 0
 	for _, rola := range(builder.rolas) {
 		err := builder.InsertRola(database, id, rola)
 		if err != nil {
