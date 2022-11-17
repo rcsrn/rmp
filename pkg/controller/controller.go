@@ -56,7 +56,7 @@ func (main *MainApp) obtainData()  {
 
 func (main *MainApp) startView() {
 	
-	main.handler.InitializeWindow()
+	main.handler.InitializeLoadWindow()
 	main.addLoadEvent()
 
 	main.handler.RunApp()

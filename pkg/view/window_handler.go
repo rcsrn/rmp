@@ -15,7 +15,7 @@ import (
 type WindowHandler struct {
 	filePath    string
 	app         fyne.App
-	window      fyne.Window
+	loadWindow      fyne.Window
 	loadHolder  *widget.Entry
 	playButton  *widget.Button
 	loadButton  *widget.Button
@@ -33,7 +33,7 @@ func CreateNewWindowHandler() *WindowHandler {
 		filePath: "" ,
 		app: app.New(),
 		loadHolder: nil,
-		window: nil,
+		loadWindow: nil,
 		playButton: nil,
 		loadButton: nil,
 		muteButton: nil,
@@ -51,7 +51,7 @@ func (handler *WindowHandler) GetFilePath() string {
 }
 
 
-func (handler *WindowHandler) InitializeWindow() {
+func (handler *WindowHandler) InitializeLoadWindow() {
 	load := handler.app.NewWindow("RMP")
 	load.Resize(fyne.NewSize(800, 400))
 	load.CenterOnScreen()
@@ -73,12 +73,12 @@ func (handler *WindowHandler) InitializeWindow() {
 	load.SetContent(content)
 
 	handler.loadButton = loadButton
-	handler.window = load
+	handler.loadWindow = load
 }
 
 
 func (handler *WindowHandler) RunApp() {
-	handler.window.ShowAndRun()
+	handler.loadWindow.ShowAndRun()
 }
 
 func (handler *WindowHandler) InitializePrincipalWindow() {
