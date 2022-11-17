@@ -88,3 +88,4 @@ INSERT INTO performers (id_performer, id_type, name) VALUES (?, ?, ?)
 
 -- name: find-rolas-by-id
 SELECT * FROM rolas WHERE id_rola = ?
+

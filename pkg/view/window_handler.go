@@ -57,7 +57,6 @@ func (handler *WindowHandler) SetPlayList(playList *[]string) {
 	handler.playList = playList
 }
 
-
 func (handler *WindowHandler) InitializeLoadWindow() {
 	load := handler.app.NewWindow("RMP")
 	load.Resize(fyne.NewSize(800, 400))
@@ -217,7 +216,6 @@ func (handler *WindowHandler) CloseLoadWindow() {
 	handler.loadWindow.Close()
 }
 
-
 func (handler *WindowHandler) ChangePlayButtonIcon() int {
 	if handler.playButton.Icon == theme.MediaPlayIcon() {
 		handler.playButton.SetIcon(theme.MediaPauseIcon())
@@ -290,3 +288,8 @@ func (handler *WindowHandler) ChangeMuteButton(isMuted bool) {
 func (handler *WindowHandler) ChangeLoopButton(isLoop bool) {
 	
 }
+
+func (handler *WindowHandler) OnSelect(action func(id int)) {
+	handler.list.OnSelected = action
+}
+

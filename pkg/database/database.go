@@ -238,8 +238,6 @@ func (database *DataBase) PreparedQuery(statement string, args ...interface{}) (
 	return tx, stmt, rows, nil
 }
 
-
-
 func (database *DataBase) QueryPerformerByID(id int64) (int, string, error) {
 	stmtStr := "SELECT " +
 		" performers.id_type, " +
@@ -278,7 +276,7 @@ func (database *DataBase) QueryPerformerByID(id int64) (int, string, error) {
 	return performerType, name, nil
 }
 
-func (database *DataBase) QueryRola(idRola int64) (*Rola, error) {
+func (database *DataBase) QueryRola(idRola int) (*Rola, error) {
 	stmtStr := "SELECT " +
 		" performers.name, " +
 		" albums.name, " +

@@ -5,7 +5,7 @@ import (
 )
 
 type Rola struct {
-	id int64
+	id int
 	performer string
 	album string
 	path string
@@ -28,7 +28,7 @@ func CreateNewRola() *Rola {
 	}
 }
 
-func (rola *Rola) GetID() int64 {
+func (rola *Rola) GetID() int {
 	return rola.id
 }
 
@@ -88,7 +88,7 @@ func (rola *Rola) SetPath(path string) {
 	rola.path = strings.TrimSpace(path)
 }
 
-func (rola *Rola) SetID(id int64) {
+func (rola *Rola) SetID(id int) {
 	rola.id = id
 }
 

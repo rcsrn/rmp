@@ -19,8 +19,7 @@ type MainApp struct {
 }
 
 func createMainApp() *MainApp {
-	
-	
+
 	return &MainApp{
 		handler: view.CreateNewWindowHandler(),
 		database: nil,
@@ -113,6 +112,13 @@ func (main *MainApp) addPrincipalEvents() {
 	main.handler.OnStop(func() {
 		
 	})
+
+	main.handler.OnSelect(func(id int) {
+		rola, err := main.database.QueryRola(id)
+		if err != nil {
+			main.check(err)
+		}
+	})
 }
 
 
@@ -147,6 +153,5 @@ func (main *MainApp) obtainPlayList() *[]string {
 		title := rola.GetTitle()
 		playList = append(playList, title)	
 	}
-	fmt.Println(playList)
 	return &playList
 }
