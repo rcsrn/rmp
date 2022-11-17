@@ -11,7 +11,7 @@ import (
 	"time"
 	"os"
 	"log"
-	"fmt"
+	_"fmt"
 	"os/user"
 	_"errors"
 )
@@ -67,8 +67,6 @@ func (main *MainApp) startView() {
 	main.addLoadEvent()
 
 	main.handler.RunApp()
-	
-	fmt.Print(main.filePath)
 }
 
 
@@ -122,8 +120,6 @@ func (main *MainApp) addPrincipalEvents() {
 	main.handler.OnSelect(func(id int) {
 		rolaPath, err := main.database.QueryPathById(id)	
 		main.check(err)
-
-		fmt.Println(rolaPath +  "RUTAAAA")
 		
 		file, err := os.Open(rolaPath)
 		main.check(err)

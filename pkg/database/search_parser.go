@@ -2,7 +2,6 @@ package database
 
 import (
 	_"strings"
-	"fmt"
 )
 
 //Search Parser is the parser for specified search by user in the main
@@ -24,8 +23,7 @@ func (parser *SearchParser) Parse() string {
 		word := words[i]
 		if character := word[len(word) - 1]; character == ':' {
 			table := obtainTable(word)
-			queryString := obtainQueryString(words)
-			fmt.Println(queryString)
+			
 			query += table
 		} else {
 			
