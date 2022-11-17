@@ -4,6 +4,12 @@ import (
 	"github.com/rcsrn/rmp/pkg/database"
 	"github.com/rcsrn/rmp/pkg/miner"
 	"github.com/rcsrn/rmp/pkg/view"
+	
+	"github.com/hajimehoshi/oto/v2"
+	"github.com/hajimehoshi/go-mp3"
+
+	"time"
+	"os"
 	"log"
 	"fmt"
 	"os/user"
@@ -114,10 +120,34 @@ func (main *MainApp) addPrincipalEvents() {
 	})
 
 	main.handler.OnSelect(func(id int) {
-		rola, err := main.database.QueryRola(id)
-		if err != nil {
-			main.check(err)
+		rolaPath, err := main.database.QueryPathById(id)	
+		main.check(err)
+
+		fmt.Println(rolaPath +  "RUTAAAA")
+		
+		file, err := os.Open(rolaPath)
+		main.check(err)
+
+		decoder, err := mp3.NewDecoder(file)
+		main.check(err)
+		
+		context, ready, err := oto.NewContext(decoder.SampleRate(), 2, 2)
+		main.check(err)
+
+		<- ready
+
+		player := context.NewPlayer(decoder)
+		defer player.Close()
+
+		player.Play()
+
+		for {
+			time.Sleep(time.Second)
+			if !player.IsPlaying() {
+				break
+			}
 		}
+		
 	})
 }
 

@@ -278,12 +278,7 @@ func (database *DataBase) QueryPerformerByID(id int64) (int, string, error) {
 
 func (database *DataBase) QueryRola(idRola int) (*Rola, error) {
 	stmtStr := "SELECT " +
-		" performers.name, " +
-		" albums.name, " +
-		" rolas.title, " +
-		" rolas.track, " +
-		" rolas.year, " +
-		" rolas.genre " +
+		"*" +
 		"FROM rolas " +
 		"INNER JOIN performers ON performers.id_performer = rolas.id_performer " +
 		"INNER JOIN albums ON albums.id_album = rolas.id_album " +
@@ -304,12 +299,14 @@ func (database *DataBase) QueryRola(idRola int) (*Rola, error) {
 
 	var performer string
 	var album string
+	var path string
 	var title string
 	var track int
 	var year int
 	var genre string
+	
 	for rows.Next() {
-		err = rows.Scan(&performer, &album, &title, &track, &year, &genre)
+		err = rows.Scan(&performer, &album, &path, &title, &track, &year, &genre)
 		if err != nil {
 			return nil, err
 		}
@@ -319,7 +316,37 @@ func (database *DataBase) QueryRola(idRola int) (*Rola, error) {
 		return nil, err
 	}
 	tx.Commit()
-	return &Rola{idRola, performer, album, "", title, track, year, genre}, nil
+	return &Rola{idRola, performer, album, path, title, track, year, genre}, nil
+}
+
+func (database *DataBase) QueryPathById(idRola int) (string, error) {
+	stmtStr := "SELECT" +
+		"path" +
+		"FROM" +
+		"rolas" +
+		"WHERE" +
+		"id_rola = ?"
+	_, stmt, err := database.PrepareStatement(stmtStr)
+	if err != nil {
+		return "", nil
+	}
+	defer stmt.Close()
+	
+	row, err := stmt.Query(idRola)
+	if err != nil {
+		return "", err
+	}
+
+	var path string
+	
+	for row.Next() {
+		err := row.Scan(&path)
+		if err != nil {
+			return "", err
+		}
+	}
+	
+	return path, nil
 }
 
 //QueryGeneralString takes a general string as a paramater an returns an array with //the id of all rolas that contain the string in its performer name, album nam//e, title or genre.
