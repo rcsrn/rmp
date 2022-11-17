@@ -7,7 +7,6 @@ import (
 	"log"
 	"fmt"
 	"os/user"
-	"os"
 	_"errors"
 )
 
@@ -129,15 +128,6 @@ func (main *MainApp) getDBPath() string{
 	user, err := user.Current()
 	main.check(err)
 	return user.HomeDir + "/.local/rmp"
-}
-
-func getCurrentPath() string {
-	current, _ := os.Getwd()
-	return current
-}
-
-func getMusicPath() string {
-	return ""
 }
 
 func (main *MainApp) check(err error) {

@@ -27,6 +27,7 @@ type WindowHandler struct {
 	stopButton  *widget.Button
 	volumeBar   *widget.Slider
 	musicSlider *widget.Slider
+	list        *widget.List
 	playList    *[]string
 }
 
@@ -171,6 +172,8 @@ func (handler *WindowHandler) createPlayList(nameSongs *[]string) *widget.List {
 		func(i binding.DataItem, o fyne.CanvasObject) {
 			o.(*widget.Label).Bind(i.(binding.String))
 		})
+	handler.list = playList
+	
 	return playList
 }
 
@@ -285,4 +288,5 @@ func (handler *WindowHandler) ChangeMuteButton(isMuted bool) {
 }
 
 func (handler *WindowHandler) ChangeLoopButton(isLoop bool) {
+	
 }
