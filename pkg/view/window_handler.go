@@ -15,7 +15,7 @@ import (
 type WindowHandler struct {
 	filePath    string
 	app         fyne.App
-	loadWindow      fyne.Window
+	loadWindow  fyne.Window
 	loadHolder  *widget.Entry
 	playButton  *widget.Button
 	loadButton  *widget.Button
@@ -192,6 +192,11 @@ func (handler *WindowHandler) ShowError(error string) {
 
 	errorWindow.Show()
 }
+
+func (handler *WindowHandler) CloseLoadWindow() {
+	handler.loadWindow.Close()
+}
+
 
 func (handler *WindowHandler) ChangePlayButtonIcon() int {
 	if handler.playButton.Icon == theme.MediaPlayIcon() {
