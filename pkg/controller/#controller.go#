@@ -1,0 +1,139 @@
+package controller
+
+import (
+	"github.com/rcsrn/rmp/pkg/database"
+	"github.com/rcsrn/rmp/pkg/miner"
+	"github.com/rcsrn/rmp/pkg/view"
+	"log"
+	"fmt"
+	"os/user"
+	"os"
+	_"errors"
+)
+
+type MainApp struct {
+	handler *view.WindowHandler
+	database *database.DataBase
+	filePath string
+	errorThrown bool
+}
+
+func createMainApp() *MainApp {
+	return &MainApp{
+		handler: view.CreateNewWindowHandler(),
+		database: nil,
+		filePath: "",
+		errorThrown: false,
+	}
+}
+
+func Run() {
+	main := createMainApp()
+	main.startView()	
+}
+
+func (main *MainApp) obtainData()  {
+	main.errorThrown = false
+	miner := miner.CreateNewMiner(main.filePath)
+
+	err := miner.Traverse()	
+	main.check(err)
+	
+	err = miner.MineTags()
+	main.check(err)
+	
+	dbPath := main.getDBPath()
+	rolas := miner.GetRolas()
+	
+	builder := database.CreateNewBuilder(rolas, dbPath)
+	database, err := builder.BuildDataBase()
+	main.check(err)
+
+	main.database = database
+}
+
+func (main *MainApp) startView() {
+	
+	main.handler.InitializeWindow()
+	main.addLoadEvent()
+
+	main.handler.RunApp()
+	
+	fmt.Print(main.filePath)
+}
+
+
+func (main *MainApp) addLoadEvent() {
+	main.handler.OnLoad(func() {
+		format := main.handler.GetLoadText()
+		
+		if !main.isDirectoryPathFormat(format) {
+			main.handler.Use()
+		} else {
+			ma>in.filePath = format
+			main.obtainData()
+			if !main.errorThrown {
+				main.handler.InitializePrincipalWindow()
+				main.addPrincipalEvents()
+			}
+		}
+	})
+}
+
+func (main *MainApp) addPrincipalEvents() {
+	main.handler.OnBack(func() {
+		
+	})
+	
+	main.handler.OnPlay(func() {
+		
+	})
+
+	main.handler.OnNext(func() {
+		
+	})
+	
+	main.handler.OnMute(func() {
+		
+	})
+	
+	main.handler.OnLoop(func() {
+		
+	})
+
+	main.handler.OnStop(func() {
+		
+	})
+}
+
+
+func (main *MainApp) isDirectoryPathFormat(format string) bool {
+	if format == "" || string(format[0]) != "/" {
+		return false
+	}
+	return true
+}
+
+
+func (main *MainApp) getDBPath() string{
+	user, err := user.Current()
+	main.check(err)
+	return user.HomeDir + "/.local/rmp"
+}
+
+func getCurrentPath() string {
+	current, _ := os.Getwd()
+	return current
+}
+
+func getMusicPath() string {
+	return ""
+}
+
+func (main *MainApp) check(err error) {
+	if err != nil {
+		main.handler.ShowError(err.Error())
+		main.errorThrown = true
+		log.Print(err)		
+	}
+}
