@@ -102,20 +102,23 @@ func (main *MainApp) addPrincipalEvents() {
 	})
 	
 	main.handler.OnPlay(func() {
+		if main.context == nil {
+			return 
+		}
+		
 		if main.handler.IsOnPlayButton() {
-			main.player.Play()
+			main.context.Resume()
+			main.handler.ChangePlayButtonIcon()
+		} else {
+			if main.isPlaying {
+				main.context.Suspend()
+				main.handler.ChangePlayButtonIcon()
+			}
 		}
-		
-		main.handler.ChangePlayButtonIcon()
-
-		if main.isPlaying {
-			main.player.Pause()
-		}
-		
 	})
 
 	main.handler.OnNext(func() {
-		
+		main.context.Resume()
 	})
 	
 	main.handler.OnMute(func() {
@@ -195,9 +198,11 @@ func (main *MainApp) obtainPlayList() *[]string {
 func (main *MainApp) playSong(file *os.File) {
 	decoder, err := mp3.NewDecoder(file)
 	main.check(err)
-	
+
 	context, ready, err := oto.NewContext(decoder.SampleRate(), 2, 2)
-		main.check(err)
+	main.check(err)
+
+	main.context = context
 	
 	<- ready
 	
