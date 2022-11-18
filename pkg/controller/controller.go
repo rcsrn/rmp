@@ -11,7 +11,7 @@ import (
 	"time"
 	"os"
 	"log"
-	_"fmt"
+	"fmt"
 	"os/user"
 	_"errors"
 )
@@ -21,6 +21,8 @@ type MainApp struct {
 	database *database.DataBase
 	filePath string
 	miner *miner.Miner
+	isPlaying bool
+	idCurrentRola int
 	errorThrown bool
 }
 
@@ -120,6 +122,14 @@ func (main *MainApp) addPrincipalEvents() {
 	main.handler.OnSelect(func(id int) {
 		//rolaPath, err := main.database.QueryPathById(id)	
 		//main.check(err)
+
+		if main.isPlaying {
+			if id == main.idCurrentRola {
+				return
+			}
+		}
+
+		main.idCurrentRola = id
 		
 		file, err := os.Open("/home/rodrigo/Escuela/Modelado/Proyectos/rmp/test/miner/TestRolas/y2mate.com - The Rose.mp3")
 		main.check(err)
@@ -177,6 +187,10 @@ func (main *MainApp) playSong(file *os.File) {
 		defer player.Close()
 	
 	player.Play()
+
+	main.isPlaying = true
+
+	fmt.Println("AL PLAY" + string(main.idCurrentRola))
 	
 	for {
 		time.Sleep(time.Second)
