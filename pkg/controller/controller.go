@@ -118,31 +118,13 @@ func (main *MainApp) addPrincipalEvents() {
 	})
 
 	main.handler.OnSelect(func(id int) {
-		rolaPath, err := main.database.QueryPathById(id)	
-		main.check(err)
+		//rolaPath, err := main.database.QueryPathById(id)	
+		//main.check(err)
 		
-		file, err := os.Open(rolaPath)
+		file, err := os.Open("/home/rodrigo/Escuela/Modelado/Proyectos/rmp/test/miner/TestRolas/y2mate.com - The Rose.mp3")
 		main.check(err)
 
-		decoder, err := mp3.NewDecoder(file)
-		main.check(err)
-		
-		context, ready, err := oto.NewContext(decoder.SampleRate(), 2, 2)
-		main.check(err)
-
-		<- ready
-
-		player := context.NewPlayer(decoder)
-		defer player.Close()
-
-		player.Play()
-
-		for {
-			time.Sleep(time.Second)
-			if !player.IsPlaying() {
-				break
-			}
-		}
+		go main.playSong(file)
 		
 	})
 }
@@ -180,4 +162,27 @@ func (main *MainApp) obtainPlayList() *[]string {
 		playList = append(playList, title)	
 	}
 	return &playList
+}
+
+func (main *MainApp) playSong(file *os.File) {
+	decoder, err := mp3.NewDecoder(file)
+	main.check(err)
+	
+	context, ready, err := oto.NewContext(decoder.SampleRate(), 2, 2)
+		main.check(err)
+	
+	<- ready
+	
+	player := context.NewPlayer(decoder)
+		defer player.Close()
+	
+	player.Play()
+	
+	for {
+		time.Sleep(time.Second)
+		if !player.IsPlaying() {
+			break
+		}
+	}
+	
 }
