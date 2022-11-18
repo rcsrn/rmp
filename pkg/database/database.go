@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"fmt"
 )
 
 type DataBase struct {
@@ -356,35 +357,30 @@ func (database *DataBase) QueryRola(idRola int64) (*Rola, error) {
 	return &Rola{idRola, performer, album, path, title, track, year, genre}, nil
 }
 
-//QueryPathById returns the rola's path associated to idRola.
-func (database *DataBase) QueryPathById(idRola int) (string, error) {
-	stmtStr := "SELECT" +
-		"path" +
-		"FROM" +
-		"rolas" +
-		"WHERE" +
-		"id_rola = ?"
+//Query returns the rola's name associated to idRola.
+func (database *DataBase) QuerySpecificColumnFromRolas(specificColumn string, condition string) (string, error) {
+	stmtStr := fmt.Sprintf("SELECT %v FROM rolas WHERE %v", specificColumn, condition)
 	_, stmt, err := database.PrepareStatement(stmtStr)
 	if err != nil {
 		return "", nil
 	}
 	defer stmt.Close()
 	
-	row, err := stmt.Query(idRola)
+	row, err := stmt.Query(specificColumn, condition)
 	if err != nil {
 		return "", err
 	}
 
-	var path string
+	var name string
 	
 	for row.Next() {
-		err := row.Scan(&path)
+		err := row.Scan(&name)
 		if err != nil {
 			return "", err
 		}
 	}
 	
-	return path, nil
+	return name, nil
 }
 
 //QueryGeneralString takes a general string as a paramater an returns an array with 

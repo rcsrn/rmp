@@ -11,7 +11,7 @@ import (
 	"time"
 	"os"
 	"log"
-_	"fmt"
+	"fmt"
 	"os/user"
 	_"errors"
 )
@@ -29,7 +29,6 @@ type MainApp struct {
 }
 
 func createMainApp() *MainApp {
-
 	return &MainApp{
 		handler: view.CreateNewWindowHandler(),
 		database: nil,
@@ -98,7 +97,28 @@ func (main *MainApp) addLoadEvent() {
 
 func (main *MainApp) addPrincipalEvents() {
 	main.handler.OnBack(func() {
+		main.player.Pause()
 		
+		rola, err := main.database.QueryRola(int64(main.idCurrentRola))
+		main.check(err)
+		
+		previousRolaName := main.handler.SelectPreviousItem(rola.GetTitle())
+
+		if previousRolaName == "" {
+			return 
+		}
+		
+		results, err := main.database.QueryGeneralString(previousRolaName)
+		
+		main.check(err)
+		
+		previousRola, err := main.database.QueryRola(results[0])
+		main.check(err)
+		
+		file, err := os.Open(fmt.Sprint(previousRola.GetPath()))
+		main.check(err)
+		
+		go main.playSong(file)
 	})
 	
 	main.handler.OnPlay(func() {
@@ -118,7 +138,29 @@ func (main *MainApp) addPrincipalEvents() {
 	})
 
 	main.handler.OnNext(func() {
-		main.context.Resume()
+		main.player.Pause()
+		
+		rola, err := main.database.QueryRola(int64(main.idCurrentRola))
+		main.check(err)
+		
+		nextRolaName := main.handler.SelectNextItem(rola.GetTitle())
+
+		if nextRolaName == "" {
+			return 
+		}
+		
+		results, err := main.database.QueryGeneralString(nextRolaName)
+		
+		main.check(err)
+		
+		nextRola, err := main.database.QueryRola(results[0])
+		main.check(err)
+		
+		file, err := os.Open(fmt.Sprint(nextRola.GetPath()))
+		main.check(err)
+		
+		go main.playSong(file)
+		
 	})
 	
 	main.handler.OnMute(func() {
@@ -156,7 +198,6 @@ func (main *MainApp) addPrincipalEvents() {
 		main.check(err)
 
 		go main.playSong(file)
-		
 	})
 }
 
