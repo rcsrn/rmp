@@ -4,7 +4,6 @@ import (
 	"testing"
 	"github.com/rcsrn/rmp/pkg/database"
 	"github.com/rcsrn/rmp/pkg/miner"
-	"fmt"
 	"os"
 	_"github.com/lib/pq"
 )
