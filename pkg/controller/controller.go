@@ -120,8 +120,8 @@ func (main *MainApp) addPrincipalEvents() {
 	})
 
 	main.handler.OnSelect(func(id int) {
-		//rolaPath, err := main.database.QueryPathById(id)	
-		//main.check(err)
+		rola, err := main.database.QueryRola(int64(id))	
+		main.check(err)
 
 		if main.isPlaying {
 			if id == main.idCurrentRola {
@@ -129,9 +129,9 @@ func (main *MainApp) addPrincipalEvents() {
 			}
 		}
 
-		main.idCurrentRola = id
+		main.idCurrentRola = int(rola.GetID())
 		
-		file, err := os.Open("/home/rodrigo/Escuela/Modelado/Proyectos/rmp/test/miner/TestRolas/y2mate.com - The Rose.mp3")
+		file, err := os.Open(rola.GetPath())
 		main.check(err)
 
 		go main.playSong(file)
