@@ -11,7 +11,7 @@ import (
 	"time"
 	"os"
 	"log"
-	_"fmt"
+_	"fmt"
 	"os/user"
 	_"errors"
 )
@@ -23,6 +23,7 @@ type MainApp struct {
 	miner *miner.Miner
 	isPlaying bool
 	player oto.Player
+	context *oto.Context
 	idCurrentRola int
 	errorThrown bool
 }
@@ -101,6 +102,15 @@ func (main *MainApp) addPrincipalEvents() {
 	})
 	
 	main.handler.OnPlay(func() {
+		if main.handler.IsOnPlayButton() {
+			main.player.Play()
+		}
+		
+		main.handler.ChangePlayButtonIcon()
+
+		if main.isPlaying {
+			main.player.Pause()
+		}
 		
 	})
 
