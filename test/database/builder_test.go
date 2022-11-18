@@ -4,7 +4,6 @@ import (
 	"testing"
 	"github.com/rcsrn/rmp/pkg/database"
 	"github.com/rcsrn/rmp/pkg/miner"
-	"fmt"
 	"os"
 	_"github.com/lib/pq"
 )
@@ -59,9 +58,6 @@ func TestAddRola(t *testing.T) {
 	if rolaObtained.GetTitle() != "Rola1" {
 		t.Error("The rola has not been added correctly")
 	}
-
-	fmt.Println(rolaObtained.GetTitle())
-	fmt.Println(rolaObtained.GetPath())
 }
 
 func TestAddPerformer(t *testing.T) {

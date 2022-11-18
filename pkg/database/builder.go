@@ -7,6 +7,10 @@ import (
 	_"fmt"
 )
 
+//Builder creates and poblates the database using the slice of rolas
+//miner has obtained. The database is created in the dbPath.
+//To create the database builder uses an executer which is a sql database
+//handler.
 type Builder struct {
 	rolas []*Rola
 	dbPath string

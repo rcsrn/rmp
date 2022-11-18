@@ -4,10 +4,8 @@ import (
 	"github.com/rcsrn/rmp/pkg/database"
 	"github.com/rcsrn/rmp/pkg/miner"
 	"github.com/rcsrn/rmp/pkg/view"
-	
 	"github.com/hajimehoshi/oto/v2"
 	"github.com/hajimehoshi/go-mp3"
-
 	"time"
 	"os"
 	"log"
@@ -118,7 +116,7 @@ func (main *MainApp) addPrincipalEvents() {
 		file, err := os.Open(fmt.Sprint(previousRola.GetPath()))
 		main.check(err)
 		
-		go main.playSong(file)
+		main.playSong(file)
 	})
 	
 	main.handler.OnPlay(func() {
@@ -248,7 +246,7 @@ func (main *MainApp) playSong(file *os.File) {
 	<- ready
 	
 	main.player = context.NewPlayer(decoder)
-		defer main.player.Close()
+	defer main.player.Close()
 	
 	main.player.Play()
 
