@@ -133,6 +133,10 @@ func (main *MainApp) addPrincipalEvents() {
 			}
 		}
 
+		if main.handler.IsOnPlayButton() {
+			main.handler.ChangePlayButtonIcon()
+		}
+
 		main.idCurrentRola = idRola
 		
 		file, err := os.Open(rola.GetPath())

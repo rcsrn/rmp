@@ -293,3 +293,6 @@ func (handler *WindowHandler) OnSelect(action func(id int)) {
 	handler.list.OnSelected = action
 }
 
+func (handler *WindowHandler) IsOnPlayButton() bool {
+	return handler.playButton.Icon == theme.MediaPlayIcon()
+}
