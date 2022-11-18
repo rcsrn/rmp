@@ -16,15 +16,11 @@ func CreateNewSearchParser(request string) *SearchParser {
 
 func (parser *SearchParser) Parse() string {
 	words := splitStatement(parser.request)
-
-	query := "SELECT name FROM (A)"
 	
 	for i := 0; len(words) > 0; i++ {
 		word := words[i]
 		if character := word[len(word) - 1]; character == ':' {
-			table := obtainTable(word)
-			
-			query += table
+
 		} else {
 			
 		}
