@@ -38,3 +38,6 @@ Para ejecutar el programa ejecutar el siguiente comando:
 ```
 $ ./rmp
 ```
+### Uso
+La ruta de directorio debe empezar con el caracter "/"
+
