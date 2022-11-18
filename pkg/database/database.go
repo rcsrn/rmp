@@ -38,7 +38,7 @@ func CreateNewDataBase(dbPath string) (*DataBase, error) {
 //Addrola inserts a rola into the database using the idPerformer and idAlbum
 //and returns the id associated to the rola added.
 //If the rolas was already in the databse AddRola returns -1.
-func (database *DataBase) AddRola(rola *Rola, idPerformer int64, idAlbum int64) (int64, error) {
+func (database *DataBase) AddRola(rola *Rola, idPerformer int, idAlbum int) (int64, error) {
 	stmtStr := `INSERT
                 INTO rolas (
                   id_performer,
@@ -266,7 +266,7 @@ func (database *DataBase) PreparedQuery(statement string, args ...interface{}) (
 //QueryPerformerById receives an id of a rola an returns the path associated to it.
 //Prepares the SQL statement to query the path. It handles the errors and then returns
 //the path.
-func (database *DataBase) QueryPerformerByID(id int64) (int, string, error) {
+func (database *DataBase) QueryPerformer(id int64) (int, string, error) {
 	stmtStr := "SELECT " +
 		" performers.id_type, " +
 		" performers.name " +
@@ -305,11 +305,17 @@ func (database *DataBase) QueryPerformerByID(id int64) (int, string, error) {
 }
 
 
-//QueryRola prepares a sql statement and returns the rola associated
-//to idRola
-func (database *DataBase) QueryRola(idRola int) (*Rola, error) {
-	stmtStr := "SELECT " +
-		"*" +
+//QueryRola receives a idRola and prepares a statement to get the rola
+//associated to the idRola. It is assumed that the rolas is in the database.
+func (database *DataBase) QueryRola(idRola int64) (*Rola, error) {
+	stmtStr :=  "SELECT " +
+		" performers.name, " +
+		" albums.name, " +
+		" rolas.path, " +
+		" rolas.title, " +
+		" rolas.track, " +
+		" rolas.year, " +
+		" rolas.genre " +
 		"FROM rolas " +
 		"INNER JOIN performers ON performers.id_performer = rolas.id_performer " +
 		"INNER JOIN albums ON albums.id_album = rolas.id_album " +

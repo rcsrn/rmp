@@ -59,6 +59,9 @@ func TestAddRola(t *testing.T) {
 	if rolaObtained.GetTitle() != "Rola1" {
 		t.Error("The rola has not been added correctly")
 	}
+
+	fmt.Println(rolaObtained.GetTitle())
+	fmt.Println(rolaObtained.GetPath())
 }
 
 func TestAddPerformer(t *testing.T) {
