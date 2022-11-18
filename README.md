@@ -41,3 +41,10 @@ $ ./rmp
 ### Uso
 La ruta de directorio debe empezar con el caracter "/"
 
+### Pruebas Unitarias
+Para correr las pruebas unitarias se deben ejecutar los siguientes comandos:
+```
+$ go test -v test/miner/*.go
+$ go test -v test/database/*.go (es necesario borrar el archivo .db en test/database para volver a correr las pruebas unitarias de la base de datos).
+ ```
+
