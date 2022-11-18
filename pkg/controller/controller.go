@@ -125,13 +125,9 @@ func (main *MainApp) addPrincipalEvents() {
 
 		idRola := int(rola.GetID())
 
-		fmt.Println("SELECCIONADO" + string(id))
-
 		if main.isPlaying {
-			fmt.Println("detecta que esta tocand")
 			fmt.Println(main.idCurrentRola)
 			if  idRola == main.idCurrentRola {
-				fmt.Println("mmm")
 				return
 			}
 		}
@@ -196,8 +192,6 @@ func (main *MainApp) playSong(file *os.File) {
 	player.Play()
 
 	main.isPlaying = true
-
-	fmt.Println("AL PLAY" + string(main.idCurrentRola))
 	
 	for {
 		time.Sleep(time.Second)
