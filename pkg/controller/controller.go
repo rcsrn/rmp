@@ -11,7 +11,7 @@ import (
 	"time"
 	"os"
 	"log"
-	"fmt"
+	_"fmt"
 	"os/user"
 	_"errors"
 )
@@ -22,6 +22,7 @@ type MainApp struct {
 	filePath string
 	miner *miner.Miner
 	isPlaying bool
+	player oto.Player
 	idCurrentRola int
 	errorThrown bool
 }
@@ -126,7 +127,7 @@ func (main *MainApp) addPrincipalEvents() {
 		idRola := int(rola.GetID())
 
 		if main.isPlaying {
-			fmt.Println(main.idCurrentRola)
+			main.player.Pause()
 			if  idRola == main.idCurrentRola {
 				return
 			}
@@ -186,16 +187,16 @@ func (main *MainApp) playSong(file *os.File) {
 	
 	<- ready
 	
-	player := context.NewPlayer(decoder)
-		defer player.Close()
+	main.player = context.NewPlayer(decoder)
+		defer main.player.Close()
 	
-	player.Play()
+	main.player.Play()
 
 	main.isPlaying = true
 	
 	for {
 		time.Sleep(time.Second)
-		if !player.IsPlaying() {
+		if !main.player.IsPlaying() {
 			main.isPlaying = false
 			break
 		}
