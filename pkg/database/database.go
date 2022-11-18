@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"fmt"
 )
 
 type DataBase struct {
@@ -15,6 +16,9 @@ type DataBase struct {
 	fileExists bool
 }
 
+//CreateNewDataBase creates new a database handler.
+//It verifies whether the .db file exists in "~/.local/rmp/". If the file
+// does not exists then it is created opening a connection to it.
 func CreateNewDataBase(dbPath string) (*DataBase, error) {
 	os.Mkdir(dbPath, 0700)
 	
@@ -32,9 +36,10 @@ func CreateNewDataBase(dbPath string) (*DataBase, error) {
 }
 
 
-//AddRola inserts a rola into the database using the idPerformer and idAlbum  //and returns the id associated to the rola added.
+//Addrola inserts a rola into the database using the idPerformer and idAlbum
+//and returns the id associated to the rola added.
 //If the rolas was already in the databse AddRola returns -1.
-func (database *DataBase) AddRola(rola *Rola, idPerformer int64, idAlbum int64) (int64, error) {
+func (database *DataBase) AddRola(rola *Rola, idPerformer int, idAlbum int) (int64, error) {
 	stmtStr := `INSERT
                 INTO rolas (
                   id_performer,
@@ -78,6 +83,10 @@ func (database *DataBase) AddRola(rola *Rola, idPerformer int64, idAlbum int64) 
 	return -1, nil
 }
 
+
+//AddAlbum insters the rola into the database using the rola associated to it.
+//It returns the id of the album that has been added.
+//If the album was already in the database AddAlbum returns -1.
 func (database *DataBase) AddAlbum(rola *Rola) (int64, error) {
 	idalbum, err := database.ExistsAlbum(filepath.Dir(rola.GetPath()), rola.GetAlbum())
 	if err != nil {
@@ -115,6 +124,9 @@ func (database *DataBase) AddAlbum(rola *Rola) (int64, error) {
 	return lastId, nil
 }
 
+//ExitsAlbum checks if an album already exists in the database.
+//If the album is already in the database it returns its id
+//and 0 if the album is not in the database.
 func (database *DataBase) ExistsAlbum(albumPath, name string) (int64, error) {
 	stmtStr := "SELECT id_album FROM albums WHERE albums.path = ? AND albums.name = ? LIMIT 1"
 	tx, stmt, rows, err := database.PreparedQuery(stmtStr, albumPath, name)
@@ -139,6 +151,10 @@ func (database *DataBase) ExistsAlbum(albumPath, name string) (int64, error) {
 	return id, nil
 }
 
+
+//AddPerformer insters the rola into the database using the rola associated to it.
+//It returns the id of the album that has been added.
+//If the album was already in the database AddPerformer returns -1.
 func (database *DataBase) AddPerformer(rola *Rola) (int64, error) {
 	idp, err := database.ExistsPerformer(rola.GetPerformer())
 	if err != nil {
@@ -175,6 +191,10 @@ func (database *DataBase) AddPerformer(rola *Rola) (int64, error) {
 	return lastId, nil
 }
 
+
+//ExistsPerformer checks if an album already exists in the database.
+//If the album is already in the database it returns its id
+//and 0 if the album is not in the database.
 func (database *DataBase) ExistsPerformer(performerName string) (int64, error) {
 	stmtStr := `SELECT
                   id_performer
@@ -204,7 +224,7 @@ func (database *DataBase) ExistsPerformer(performerName string) (int64, error) {
 	return id, nil
 }
 
-
+//Load pings the database to verify if the connnection is active.
 func (database *DataBase) Load() error {
 	err := database.db.Ping()
 	if err != nil {
@@ -213,6 +233,9 @@ func (database *DataBase) Load() error {
 	return nil
 }
 
+
+//PrepareStatement initializes a sqlite prepared statement from a string
+//and returns the corresponding sql context and prepared statement.
 func (database *DataBase) PrepareStatement(statement string) (*sql.Tx, *sql.Stmt, error) {
 	tx, err := database.db.Begin()
 	if err != nil {
@@ -225,6 +248,9 @@ func (database *DataBase) PrepareStatement(statement string) (*sql.Tx, *sql.Stmt
 	return tx, stmt, nil
 }
 
+// PreparedQuery executes a prepared query and returns the resulting rows,
+// it handles the errors and returns the context and prepared statement
+// for the user to close them.
 func (database *DataBase) PreparedQuery(statement string, args ...interface{}) (*sql.Tx, *sql.Stmt, *sql.Rows, error) {
 	tx, stmt, err := database.PrepareStatement(statement)
 	if err != nil {
@@ -238,7 +264,10 @@ func (database *DataBase) PreparedQuery(statement string, args ...interface{}) (
 	return tx, stmt, rows, nil
 }
 
-func (database *DataBase) QueryPerformerByID(id int64) (int, string, error) {
+//QueryPerformerById receives an id of a rola an returns the path associated to it.
+//Prepares the SQL statement to query the path. It handles the errors and then returns
+//the path.
+func (database *DataBase) QueryPerformer(id int64) (int, string, error) {
 	stmtStr := "SELECT " +
 		" performers.id_type, " +
 		" performers.name " +
@@ -276,9 +305,18 @@ func (database *DataBase) QueryPerformerByID(id int64) (int, string, error) {
 	return performerType, name, nil
 }
 
-func (database *DataBase) QueryRola(idRola int) (*Rola, error) {
-	stmtStr := "SELECT " +
-		"*" +
+
+//QueryRola receives a idRola and prepares a statement to get the rola
+//associated to the idRola. It is assumed that the rolas is in the database.
+func (database *DataBase) QueryRola(idRola int64) (*Rola, error) {
+	stmtStr :=  "SELECT " +
+		" performers.name, " +
+		" albums.name, " +
+		" rolas.path, " +
+		" rolas.title, " +
+		" rolas.track, " +
+		" rolas.year, " +
+		" rolas.genre " +
 		"FROM rolas " +
 		"INNER JOIN performers ON performers.id_performer = rolas.id_performer " +
 		"INNER JOIN albums ON albums.id_album = rolas.id_album " +
@@ -319,37 +357,35 @@ func (database *DataBase) QueryRola(idRola int) (*Rola, error) {
 	return &Rola{idRola, performer, album, path, title, track, year, genre}, nil
 }
 
-func (database *DataBase) QueryPathById(idRola int) (string, error) {
-	stmtStr := "SELECT" +
-		"path" +
-		"FROM" +
-		"rolas" +
-		"WHERE" +
-		"id_rola = ?"
+//Query returns the rola's name associated to idRola.
+func (database *DataBase) QuerySpecificColumnFromRolas(specificColumn string, condition string) (string, error) {
+	stmtStr := fmt.Sprintf("SELECT %v FROM rolas WHERE %v", specificColumn, condition)
 	_, stmt, err := database.PrepareStatement(stmtStr)
 	if err != nil {
 		return "", nil
 	}
 	defer stmt.Close()
 	
-	row, err := stmt.Query(idRola)
+	row, err := stmt.Query(specificColumn, condition)
 	if err != nil {
 		return "", err
 	}
 
-	var path string
+	var name string
 	
 	for row.Next() {
-		err := row.Scan(&path)
+		err := row.Scan(&name)
 		if err != nil {
 			return "", err
 		}
 	}
 	
-	return path, nil
+	return name, nil
 }
 
-//QueryGeneralString takes a general string as a paramater an returns an array with //the id of all rolas that contain the string in its performer name, album nam//e, title or genre.
+//QueryGeneralString takes a general string as a paramater an returns an array with 
+//the id of all rolas that contain the string in its performer name, album name,
+//title or genre.
 func (database *DataBase) QueryGeneralString(general string) ([]int64, error) {
 	result := make([]int64, 0)
 	stmtStr := "SELECT " +

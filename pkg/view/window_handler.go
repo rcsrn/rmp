@@ -293,3 +293,46 @@ func (handler *WindowHandler) OnSelect(action func(id int)) {
 	handler.list.OnSelected = action
 }
 
+func (handler *WindowHandler) IsOnPlayButton() bool {
+	return handler.playButton.Icon == theme.MediaPlayIcon()
+}
+
+func (handler *WindowHandler) SelectPreviousItem(currentItem string) string{
+	var j int
+	for i, rola := range (*handler.playList) {
+		if rola == currentItem {
+			j = i
+		}
+	}
+
+	if j == 0 {
+		handler.list.Select(j)
+		return (*handler.playList)[j]
+	} else {
+		if j - 1 < 0 {
+			return ""
+		}
+		handler.list.Select(j - 1)
+		return (*handler.playList)[j - 1]
+	}
+}
+
+func (handler *WindowHandler) SelectNextItem(currentItem string) string{
+	var j int
+	for i, rola := range (*handler.playList) {
+		if rola == currentItem {
+			j = i
+		}
+	}
+	
+	if j == len (*handler.playList) {
+		handler.list.Select(j)
+		return (*handler.playList)[j]
+	} else {
+		if j + 1 == len (*handler.playList) {
+			return ""
+		}
+		handler.list.Select(j + 1)
+		return (*handler.playList)[j + 1]
+	}
+}

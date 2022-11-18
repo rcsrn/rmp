@@ -11,7 +11,7 @@ import (
 	"time"
 	"os"
 	"log"
-	_"fmt"
+	"fmt"
 	"os/user"
 	_"errors"
 )
@@ -21,11 +21,14 @@ type MainApp struct {
 	database *database.DataBase
 	filePath string
 	miner *miner.Miner
+	isPlaying bool
+	player oto.Player
+	context *oto.Context
+	idCurrentRola int
 	errorThrown bool
 }
 
 func createMainApp() *MainApp {
-
 	return &MainApp{
 		handler: view.CreateNewWindowHandler(),
 		database: nil,
@@ -94,14 +97,69 @@ func (main *MainApp) addLoadEvent() {
 
 func (main *MainApp) addPrincipalEvents() {
 	main.handler.OnBack(func() {
+		main.player.Pause()
 		
+		rola, err := main.database.QueryRola(int64(main.idCurrentRola))
+		main.check(err)
+		
+		previousRolaName := main.handler.SelectPreviousItem(rola.GetTitle())
+
+		if previousRolaName == "" {
+			return 
+		}
+		
+		results, err := main.database.QueryGeneralString(previousRolaName)
+		
+		main.check(err)
+		
+		previousRola, err := main.database.QueryRola(results[0])
+		main.check(err)
+		
+		file, err := os.Open(fmt.Sprint(previousRola.GetPath()))
+		main.check(err)
+		
+		go main.playSong(file)
 	})
 	
 	main.handler.OnPlay(func() {
+		if main.context == nil {
+			return 
+		}
 		
+		if main.handler.IsOnPlayButton() {
+			main.context.Resume()
+			main.handler.ChangePlayButtonIcon()
+		} else {
+			if main.isPlaying {
+				main.context.Suspend()
+				main.handler.ChangePlayButtonIcon()
+			}
+		}
 	})
 
 	main.handler.OnNext(func() {
+		main.player.Pause()
+		
+		rola, err := main.database.QueryRola(int64(main.idCurrentRola))
+		main.check(err)
+		
+		nextRolaName := main.handler.SelectNextItem(rola.GetTitle())
+
+		if nextRolaName == "" {
+			return 
+		}
+		
+		results, err := main.database.QueryGeneralString(nextRolaName)
+		
+		main.check(err)
+		
+		nextRola, err := main.database.QueryRola(results[0])
+		main.check(err)
+		
+		file, err := os.Open(fmt.Sprint(nextRola.GetPath()))
+		main.check(err)
+		
+		go main.playSong(file)
 		
 	})
 	
@@ -118,32 +176,28 @@ func (main *MainApp) addPrincipalEvents() {
 	})
 
 	main.handler.OnSelect(func(id int) {
-		rolaPath, err := main.database.QueryPathById(id)	
-		main.check(err)
-		
-		file, err := os.Open(rolaPath)
+		rola, err := main.database.QueryRola(int64(id))	
 		main.check(err)
 
-		decoder, err := mp3.NewDecoder(file)
-		main.check(err)
-		
-		context, ready, err := oto.NewContext(decoder.SampleRate(), 2, 2)
-		main.check(err)
+		idRola := int(rola.GetID())
 
-		<- ready
-
-		player := context.NewPlayer(decoder)
-		defer player.Close()
-
-		player.Play()
-
-		for {
-			time.Sleep(time.Second)
-			if !player.IsPlaying() {
-				break
+		if main.isPlaying {
+			main.player.Pause()
+			if  idRola == main.idCurrentRola {
+				return
 			}
 		}
+
+		if main.handler.IsOnPlayButton() {
+			main.handler.ChangePlayButtonIcon()
+		}
+
+		main.idCurrentRola = idRola
 		
+		file, err := os.Open(rola.GetPath())
+		main.check(err)
+
+		go main.playSong(file)
 	})
 }
 
@@ -180,4 +234,32 @@ func (main *MainApp) obtainPlayList() *[]string {
 		playList = append(playList, title)	
 	}
 	return &playList
+}
+
+func (main *MainApp) playSong(file *os.File) {
+	decoder, err := mp3.NewDecoder(file)
+	main.check(err)
+
+	context, ready, err := oto.NewContext(decoder.SampleRate(), 2, 2)
+	main.check(err)
+
+	main.context = context
+	
+	<- ready
+	
+	main.player = context.NewPlayer(decoder)
+		defer main.player.Close()
+	
+	main.player.Play()
+
+	main.isPlaying = true
+	
+	for {
+		time.Sleep(time.Second)
+		if !main.player.IsPlaying() {
+			main.isPlaying = false
+			break
+		}
+	}
+	
 }
