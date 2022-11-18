@@ -123,13 +123,20 @@ func (main *MainApp) addPrincipalEvents() {
 		rola, err := main.database.QueryRola(int64(id))	
 		main.check(err)
 
+		idRola := int(rola.GetID())
+
+		fmt.Println("SELECCIONADO" + string(id))
+
 		if main.isPlaying {
-			if id == main.idCurrentRola {
+			fmt.Println("detecta que esta tocand")
+			fmt.Println(main.idCurrentRola)
+			if  idRola == main.idCurrentRola {
+				fmt.Println("mmm")
 				return
 			}
 		}
 
-		main.idCurrentRola = int(rola.GetID())
+		main.idCurrentRola = idRola
 		
 		file, err := os.Open(rola.GetPath())
 		main.check(err)
@@ -195,6 +202,7 @@ func (main *MainApp) playSong(file *os.File) {
 	for {
 		time.Sleep(time.Second)
 		if !player.IsPlaying() {
+			main.isPlaying = false
 			break
 		}
 	}
