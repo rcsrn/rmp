@@ -28,9 +28,13 @@ En el controlador tendremos un objeto MainApp el cual tendrá como propiedades u
 ### Compilación
     
 Para compilar el programa ejecutar el siguiente comando:
-     $ go build cmd/rmp.go
+```
+$ go build cmd/rmp.go
+```
      
 ### Ejecución
 
 Para ejecutar el programa ejecutar el siguiente comando:
-     $ ./rmp
+```
+$ ./rmp
+```
