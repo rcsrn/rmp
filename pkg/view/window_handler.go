@@ -297,7 +297,7 @@ func (handler *WindowHandler) IsOnPlayButton() bool {
 	return handler.playButton.Icon == theme.MediaPlayIcon()
 }
 
-func (handler *WindowHandler) SelectPreviousItem(currentItem string) string{
+func (handler *WindowHandler) SelectPreviousItem(currentItem string) int {
 	var j int
 	for i, rola := range (*handler.playList) {
 		if rola == currentItem {
@@ -306,13 +306,13 @@ func (handler *WindowHandler) SelectPreviousItem(currentItem string) string{
 	}
 
 	if j - 1 < 0 {
-		return ""
+		return 0
 	}
 	handler.list.Select(j - 1)
-	return (*handler.playList)[j - 1]	
+	return 1	
 }
 
-func (handler *WindowHandler) SelectNextItem(currentItem string) string{
+func (handler *WindowHandler) SelectNextItem(currentItem string) int {
 	var j int
 	for i, rola := range (*handler.playList) {
 		if rola == currentItem {
@@ -321,8 +321,8 @@ func (handler *WindowHandler) SelectNextItem(currentItem string) string{
 	}
 	
 	if j + 1 == len(*handler.playList) {
-		return ""
+		return 0
 	}
 	handler.list.Select(j + 1)
-	return (*handler.playList)[j + 1]
+	return 1
 }

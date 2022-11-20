@@ -9,7 +9,7 @@ import (
 	"time"
 	"os"
 	"log"
-	"fmt"
+	_"fmt"
 	"os/user"
 	_"errors"
 )
@@ -102,24 +102,13 @@ func (main *MainApp) addPrincipalEvents() {
 		rola, err := main.database.QueryRola(int64(main.idCurrentRola))
 		main.check(err)
 		
-		previousRolaName := main.handler.SelectPreviousItem(rola.GetTitle())
+		isSelected := main.handler.SelectPreviousItem(rola.GetTitle())
 
-		if previousRolaName == "" {
+		if isSelected == 0 {
 			return 
 		}
 		
 		main.player.Pause()
-		
-		results, err := main.database.QueryGeneralString(previousRolaName)
-		
-		main.check(err)
-		
-		previousRola, err := main.database.QueryRola(results[0])
-		main.check(err)
-		
-		_, err = os.Open(fmt.Sprint(previousRola.GetPath()))
-		main.check(err)
-		
 	})
 	
 	main.handler.OnPlay(func() {
@@ -146,22 +135,12 @@ func (main *MainApp) addPrincipalEvents() {
 		rola, err := main.database.QueryRola(int64(main.idCurrentRola))
 		main.check(err)
 		
-		nextRolaName := main.handler.SelectNextItem(rola.GetTitle())
+		isSelected := main.handler.SelectNextItem(rola.GetTitle())
 
-		if nextRolaName == "" {
+		if isSelected == 0 {
 			return 
 		} 
 		main.player.Pause()
-		
-		results, err := main.database.QueryGeneralString(nextRolaName)	
-		main.check(err)
-		
-		nextRola, err := main.database.QueryRola(results[0])
-		main.check(err)
-		
-		_, err = os.Open(fmt.Sprint(nextRola.GetPath()))
-		main.check(err)
-		
 	})
 	
 	main.handler.OnMute(func() {
