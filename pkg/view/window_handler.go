@@ -297,6 +297,10 @@ func (handler *WindowHandler) IsOnPlayButton() bool {
 	return handler.playButton.Icon == theme.MediaPlayIcon()
 }
 
+func(handler *WindowHandler) IsOnMuteButton() bool {
+	return handler.muteButton.Icon == theme.VolumeMuteIcon()
+}
+
 func (handler *WindowHandler) SelectPreviousItem(currentItem string) int {
 	var j int
 	for i, rola := range (*handler.playList) {

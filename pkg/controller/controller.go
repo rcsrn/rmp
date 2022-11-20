@@ -144,7 +144,18 @@ func (main *MainApp) addPrincipalEvents() {
 	})
 	
 	main.handler.OnMute(func() {
-		
+		if main.player == nil {
+			return
+		}
+
+		main.handler.ChangeMuteButtonIcon()
+		if main.handler.IsOnMuteButton() {
+			if main.player.IsPlaying() {
+				main.player.SetVolume(0)
+			}
+		} else {
+			main.player.SetVolume(1)
+		}
 	})
 	
 	main.handler.OnLoop(func() {
@@ -170,6 +181,10 @@ func (main *MainApp) addPrincipalEvents() {
 		
 		if main.handler.IsOnPlayButton() {
 			main.handler.ChangePlayButtonIcon()
+		}
+
+		if main.handler.IsOnMuteButton() {
+			main.handler.ChangeMuteButtonIcon()
 		}
 
 		main.idCurrentRola = idRola
