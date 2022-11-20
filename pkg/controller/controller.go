@@ -185,13 +185,13 @@ func (main *MainApp) addPrincipalEvents() {
 				return
 			}
 		}
-
+		
 		if main.handler.IsOnPlayButton() {
 			main.handler.ChangePlayButtonIcon()
 		}
 
 		main.idCurrentRola = idRola
-		
+
 		file, err := os.Open(rola.GetPath())
 		main.check(err)
 

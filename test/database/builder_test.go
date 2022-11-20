@@ -6,6 +6,7 @@ import (
 	"github.com/rcsrn/rmp/pkg/miner"
 	"os"
 	_"github.com/lib/pq"
+	_"fmt"
 )
 
 var testBuilder *database.Builder
@@ -46,6 +47,7 @@ func TestAddRola(t *testing.T) {
 	}
 	
 	rolaObtained, err := testDataBase.QueryRola(idRola)
+	
 
 	if err != nil {
 		t.Error(err)
@@ -56,7 +58,7 @@ func TestAddRola(t *testing.T) {
 	}
 	
 	if rolaObtained.GetTitle() != "Rola1" {
-		t.Error("The rola has not been added correctly")
+		t.Errorf("The rola's title should be 'Rola1' but '%s' has been gotten.", rolaObtained.GetTitle())
 	}
 }
 
