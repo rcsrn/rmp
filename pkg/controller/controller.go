@@ -95,7 +95,9 @@ func (main *MainApp) addLoadEvent() {
 
 func (main *MainApp) addPrincipalEvents() {
 	main.handler.OnBack(func() {
-		main.player.Pause()
+		if main.player == nil  {
+			return
+		}
 		
 		rola, err := main.database.QueryRola(int64(main.idCurrentRola))
 		main.check(err)
@@ -106,6 +108,8 @@ func (main *MainApp) addPrincipalEvents() {
 			return 
 		}
 		
+		main.player.Pause()
+		
 		results, err := main.database.QueryGeneralString(previousRolaName)
 		
 		main.check(err)
@@ -113,10 +117,9 @@ func (main *MainApp) addPrincipalEvents() {
 		previousRola, err := main.database.QueryRola(results[0])
 		main.check(err)
 		
-		file, err := os.Open(fmt.Sprint(previousRola.GetPath()))
+		_, err = os.Open(fmt.Sprint(previousRola.GetPath()))
 		main.check(err)
 		
-		main.playSong(file)
 	})
 	
 	main.handler.OnPlay(func() {
@@ -136,7 +139,9 @@ func (main *MainApp) addPrincipalEvents() {
 	})
 
 	main.handler.OnNext(func() {
-		main.player.Pause()
+		if main.player == nil {
+			return
+		}
 		
 		rola, err := main.database.QueryRola(int64(main.idCurrentRola))
 		main.check(err)
@@ -145,19 +150,17 @@ func (main *MainApp) addPrincipalEvents() {
 
 		if nextRolaName == "" {
 			return 
-		}
+		} 
+		main.player.Pause()
 		
-		results, err := main.database.QueryGeneralString(nextRolaName)
-		
+		results, err := main.database.QueryGeneralString(nextRolaName)	
 		main.check(err)
 		
 		nextRola, err := main.database.QueryRola(results[0])
 		main.check(err)
 		
-		file, err := os.Open(fmt.Sprint(nextRola.GetPath()))
+		_, err = os.Open(fmt.Sprint(nextRola.GetPath()))
 		main.check(err)
-		
-		go main.playSong(file)
 		
 	})
 	
@@ -194,11 +197,10 @@ func (main *MainApp) addPrincipalEvents() {
 
 		file, err := os.Open(rola.GetPath())
 		main.check(err)
-
+		
 		go main.playSong(file)
 	})
 }
-
 
 func (main *MainApp) isDirectoryPathFormat(format string) bool {
 	if format == "" || string(format[0]) != "/" {
