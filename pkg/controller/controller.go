@@ -95,7 +95,9 @@ func (main *MainApp) addLoadEvent() {
 
 func (main *MainApp) addPrincipalEvents() {
 	main.handler.OnBack(func() {
-		main.player.Pause()
+		if main.player == nil  {
+			return
+		}
 		
 		rola, err := main.database.QueryRola(int64(main.idCurrentRola))
 		main.check(err)
@@ -105,6 +107,8 @@ func (main *MainApp) addPrincipalEvents() {
 		if previousRolaName == "" {
 			return 
 		}
+		
+		main.player.Pause()
 		
 		results, err := main.database.QueryGeneralString(previousRolaName)
 		
@@ -136,7 +140,9 @@ func (main *MainApp) addPrincipalEvents() {
 	})
 
 	main.handler.OnNext(func() {
-		main.player.Pause()
+		if main.player == nil {
+			return
+		}
 		
 		rola, err := main.database.QueryRola(int64(main.idCurrentRola))
 		main.check(err)
@@ -145,7 +151,9 @@ func (main *MainApp) addPrincipalEvents() {
 
 		if nextRolaName == "" {
 			return 
-		}
+		} 
+		main.player.Pause()
+		
 		
 		results, err := main.database.QueryGeneralString(nextRolaName)
 		
