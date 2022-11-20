@@ -163,7 +163,14 @@ func (main *MainApp) addPrincipalEvents() {
 	})
 
 	main.handler.OnStop(func() {
-		
+		if main.player == nil {
+			return
+		}
+
+		if main.player.IsPlaying() {
+			main.player.Pause()
+			main.handler.ChangePlayButtonIcon()
+		}
 	})
 
 	main.handler.OnSelect(func(id int) {

@@ -277,18 +277,6 @@ func (handler *WindowHandler) OnStop(action func()) {
 	handler.stopButton.OnTapped = action
 }
 
-func (handler *WindowHandler) ChangePlayButton(isPlaying bool) {
-	
-}
-
-func (handler *WindowHandler) ChangeMuteButton(isMuted bool) {
-	
-}
-
-func (handler *WindowHandler) ChangeLoopButton(isLoop bool) {
-	
-}
-
 func (handler *WindowHandler) OnSelect(action func(id int)) {
 	handler.list.OnSelected = action
 }
