@@ -17,8 +17,14 @@ type PrincipalWindow struct {
 	newPlayList *widget.List
 }
 
-func createPrincipalWindow(window fyne.Window, content *fyne.Container, top *fyne.Container, bottom *fyne.Container, left *fyne.Container, right *fyne.Container) *PrincipalWindow {
-	return &PrincipalWindow{window, content, top, bottom, left, right, nil}
+func createPrincipalWindow(window fyne.Window, content *fyne.Container, top *fyne.Container,
+	bottom *fyne.Container, left *fyne.Container, right *fyne.Container) *PrincipalWindow {
+	return &PrincipalWindow{
+		window: window,
+		content: content,
+		top: top,
+		bottom: bottom,
+	}
 }
 
 func (principal *PrincipalWindow) UpdateDisplay(nameSongs *[]string) {
