@@ -18,6 +18,7 @@ type WindowHandler struct {
 	app         fyne.App
 	loadWindow  fyne.Window
 	loadHolder  *widget.Entry
+	searchBar   *widget.Entry
 	playButton  *widget.Button
 	loadButton  *widget.Button
 	muteButton  *widget.Button
@@ -95,6 +96,7 @@ func (handler *WindowHandler) InitializePrincipalWindow() {
 
 	searchBar := widget.NewEntry()
 	searchBar.SetPlaceHolder("Search...")
+	handler.searchBar = searchBar
 
 	top := container.NewVBox(searchBar)
 
@@ -247,6 +249,10 @@ func (handler *WindowHandler) ChangeLoopButtonIcon() int {
 		return 1
 	}
 	
+}
+
+func (handler *WindowHandler) OnSearchBar(action func(string)) {
+	handler.searchBar.OnChanged = action
 }
 
 func (handler *WindowHandler) OnLoad(action func()) {

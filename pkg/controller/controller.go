@@ -9,7 +9,7 @@ import (
 	"time"
 	"os"
 	"log"
-	_"fmt"
+	"fmt"
 	"os/user"
 	_"errors"
 )
@@ -217,11 +217,16 @@ func (main *MainApp) addPrincipalEvents() {
 }
 
 func (main *MainApp) addBarEvents() {
+
+	main.handler.OnSearchBar(func (text string) {
+		fmt.Println("ESTO ESCRIBIO EL USUARIO:" + text)
+	})
+	
 	main.handler.OnVolumeBar(func (float float64) {
 		if main.player == nil {
 			return
 		}
-		main.player.SetVolume(float)
+		main.player.SetVolume(float/30)
 	})
 
 	main.handler.OnMusicBar(func (float float64) {
