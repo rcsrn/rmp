@@ -40,11 +40,13 @@ $ ./rmp
 ```
 ### Uso
 Es necesario descargar ALSA. En Ubuntu o Debian, correr el comando:
+ ```
 $ apt install libasound2-dev
-
+ ```
 En distribuciones de linux RedHat-based:
+ ```
 $ dnf install alsa-lib-devel
-
+ ```
 La ruta de directorio debe empezar con el caracter "/"
 
 ### Pruebas Unitarias
