@@ -16,6 +16,7 @@ import (
 
 type MainApp struct {
 	handler *view.WindowHandler
+	principal *view.PrincipalWindow
 	database *database.DataBase
 	parser *database.SearchParser
 	filePath string
@@ -88,6 +89,8 @@ func (main *MainApp) addLoadEvent() {
 				main.handler.SetPlayList(playList)
 				
 				main.handler.InitializePrincipalWindow()
+				main.principal = main.handler.GetPrincipalWindow()
+				
 				main.addPrincipalEvents()
 				main.addBarEvents()
 			}
@@ -217,11 +220,18 @@ func (main *MainApp) addPrincipalEvents() {
 
 func (main *MainApp) addBarEvents() {
 	main.handler.OnSearch(func () {
+		
 		input := main.handler.GetInputText()
+
+		if input == "" {
+			return
+		}
+		
 		if main.parser.IsGeneralSearch(input) {
 			main.obtainGeneralSearch(input)
+		} else {
+			main.obtainSpecificSearch(input)
 		}
-		main.obtainSpecificSearch(input)
 	})
 		
 	main.handler.OnVolumeBar(func (float float64) {
@@ -240,9 +250,21 @@ func (main *MainApp) addBarEvents() {
 
 
 func (main *MainApp) obtainGeneralSearch(text string) {
-	resultsID, err := main.database.QueryGeneralString(text)
-	main.check(err)
-	
+	idResults, err := main.database.QueryGeneralString(text)
+	if err != nil {
+		return
+	}
+
+	nameSongs := make([]string, 0)
+
+	for _, idRola := range(idResults) {
+		rola, err := main.database.QueryRola(idRola)
+		if err != nil {
+			return 
+		}
+		nameSongs = append(nameSongs, rola.GetTitle())
+	}
+	main.principal.UpdateDisplay(&nameSongs)
 }
 
 func (main *MainApp) obtainSpecificSearch(text string) {

@@ -16,6 +16,7 @@ import (
 type WindowHandler struct {
 	filePath     string
 	app          fyne.App
+	principal    *PrincipalWindow
 	loadWindow   fyne.Window
 	loadHolder   *widget.Entry
 	searchBar    *widget.Entry
@@ -42,6 +43,10 @@ func CreateNewWindowHandler() *WindowHandler {
 
 func (handler *WindowHandler) GetFilePath() string {
 	return handler.filePath
+}
+
+func (handler *WindowHandler) GetPrincipalWindow() *PrincipalWindow {
+	return handler.principal
 }
 
 func (handler *WindowHandler) SetPlayList(playList *[]string) {
@@ -108,6 +113,8 @@ func (handler *WindowHandler) InitializePrincipalWindow() {
 	content := container.NewBorder(top, bottom, nil, nil, center)
 	
 	principalWindow.SetContent(content)
+	
+	handler.principal = createPrincipalWindow(principalWindow, content, top, bottom, nil, nil, center)
 
 	principalWindow.Show()
 }
