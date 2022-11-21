@@ -281,6 +281,14 @@ func (handler *WindowHandler) OnSelect(action func(id int)) {
 	handler.list.OnSelected = action
 }
 
+func (handler *WindowHandler) OnMusicBar(action func(f float64)) {
+	handler.musicSlider.OnChanged = action
+}
+
+func (handler *WindowHandler) OnVolumeBar(action func(float float64)) {
+	handler.volumeBar.OnChanged = action
+}
+
 func (handler *WindowHandler) IsOnPlayButton() bool {
 	return handler.playButton.Icon == theme.MediaPlayIcon()
 }
@@ -322,4 +330,14 @@ func (handler *WindowHandler) SelectNextItem(currentItem string) int {
 	}
 	handler.list.Select(j + 1)
 	return 1
+}
+
+func (handler *WindowHandler) SetDataToMusicSlider(float float64) {
+	data := binding.BindFloat(&float)
+	handler.musicSlider.Bind(data)
+}
+
+func (handler *WindowHandler) SetDataToVolumeSlider(float float64) {
+	data := binding.BindFloat(&float)
+	handler.volumeBar.Bind(data)
 }

@@ -88,6 +88,7 @@ func (main *MainApp) addLoadEvent() {
 				
 				main.handler.InitializePrincipalWindow()
 				main.addPrincipalEvents()
+				main.addBarEvents()
 			}
 		}
 	})
@@ -215,6 +216,21 @@ func (main *MainApp) addPrincipalEvents() {
 	})
 }
 
+func (main *MainApp) addBarEvents() {
+	main.handler.OnVolumeBar(func (float float64) {
+		if main.player == nil {
+			return
+		}
+		main.player.SetVolume(float)
+	})
+
+	main.handler.OnMusicBar(func (float float64) {
+		if main.player == nil {
+			return
+		}
+	})
+}
+
 func (main *MainApp) isDirectoryPathFormat(format string) bool {
 	if format == "" || string(format[0]) != "/" {
 		return false
@@ -287,3 +303,5 @@ func (main *MainApp) verifyDuration() {
 		}
 	}
 }
+
+
