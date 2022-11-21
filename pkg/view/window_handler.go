@@ -258,9 +258,8 @@ func (handler *WindowHandler) ChangeLoopButtonIcon() int {
 	
 }
 
-
-func (handler *WindowHandler) OnSearchBar(action func(string)) {
-	handler.searchBar.OnChanged = action
+func (handler *WindowHandler) OnSearch(action func()) {
+	handler.searchButton.OnTapped = action
 }
 
 func (handler *WindowHandler) OnLoad(action func()) {
@@ -354,4 +353,8 @@ func (handler *WindowHandler) SetDataToMusicSlider(float float64) {
 func (handler *WindowHandler) SetDataToVolumeSlider(float float64) {
 	data := binding.BindFloat(&float)
 	handler.volumeBar.Bind(data)
+}
+
+func (handler *WindowHandler) GetInputText() string {
+	return handler.searchBar.Text
 }
