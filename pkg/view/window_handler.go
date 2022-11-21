@@ -277,18 +277,6 @@ func (handler *WindowHandler) OnStop(action func()) {
 	handler.stopButton.OnTapped = action
 }
 
-func (handler *WindowHandler) ChangePlayButton(isPlaying bool) {
-	
-}
-
-func (handler *WindowHandler) ChangeMuteButton(isMuted bool) {
-	
-}
-
-func (handler *WindowHandler) ChangeLoopButton(isLoop bool) {
-	
-}
-
 func (handler *WindowHandler) OnSelect(action func(id int)) {
 	handler.list.OnSelected = action
 }
@@ -297,7 +285,16 @@ func (handler *WindowHandler) IsOnPlayButton() bool {
 	return handler.playButton.Icon == theme.MediaPlayIcon()
 }
 
-func (handler *WindowHandler) SelectPreviousItem(currentItem string) string{
+func(handler *WindowHandler) IsOnMuteButton() bool {
+	return handler.muteButton.Icon == theme.VolumeMuteIcon()
+}
+
+func (handler *WindowHandler) IsOnLoopButton() bool {
+	var icon *fyne.StaticResource = res.ResourceRepeatLightPng
+	return handler.loopButton.Icon == icon
+}
+
+func (handler *WindowHandler) SelectPreviousItem(currentItem string) int {
 	var j int
 	for i, rola := range (*handler.playList) {
 		if rola == currentItem {
@@ -306,13 +303,13 @@ func (handler *WindowHandler) SelectPreviousItem(currentItem string) string{
 	}
 
 	if j - 1 < 0 {
-		return ""
+		return 0
 	}
 	handler.list.Select(j - 1)
-	return (*handler.playList)[j - 1]	
+	return 1	
 }
 
-func (handler *WindowHandler) SelectNextItem(currentItem string) string{
+func (handler *WindowHandler) SelectNextItem(currentItem string) int {
 	var j int
 	for i, rola := range (*handler.playList) {
 		if rola == currentItem {
@@ -321,8 +318,8 @@ func (handler *WindowHandler) SelectNextItem(currentItem string) string{
 	}
 	
 	if j + 1 == len(*handler.playList) {
-		return ""
+		return 0
 	}
 	handler.list.Select(j + 1)
-	return (*handler.playList)[j + 1]
+	return 1
 }

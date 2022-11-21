@@ -9,7 +9,7 @@ import (
 	"time"
 	"os"
 	"log"
-	"fmt"
+	_"fmt"
 	"os/user"
 	_"errors"
 )
@@ -102,24 +102,13 @@ func (main *MainApp) addPrincipalEvents() {
 		rola, err := main.database.QueryRola(int64(main.idCurrentRola))
 		main.check(err)
 		
-		previousRolaName := main.handler.SelectPreviousItem(rola.GetTitle())
+		isSelected := main.handler.SelectPreviousItem(rola.GetTitle())
 
-		if previousRolaName == "" {
+		if isSelected == 0 {
 			return 
 		}
 		
 		main.player.Pause()
-		
-		results, err := main.database.QueryGeneralString(previousRolaName)
-		
-		main.check(err)
-		
-		previousRola, err := main.database.QueryRola(results[0])
-		main.check(err)
-		
-		_, err = os.Open(fmt.Sprint(previousRola.GetPath()))
-		main.check(err)
-		
 	})
 	
 	main.handler.OnPlay(func() {
@@ -146,34 +135,50 @@ func (main *MainApp) addPrincipalEvents() {
 		rola, err := main.database.QueryRola(int64(main.idCurrentRola))
 		main.check(err)
 		
-		nextRolaName := main.handler.SelectNextItem(rola.GetTitle())
+		isSelected := main.handler.SelectNextItem(rola.GetTitle())
 
-		if nextRolaName == "" {
+		if isSelected == 0 {
 			return 
 		} 
 		main.player.Pause()
-		
-		results, err := main.database.QueryGeneralString(nextRolaName)	
-		main.check(err)
-		
-		nextRola, err := main.database.QueryRola(results[0])
-		main.check(err)
-		
-		_, err = os.Open(fmt.Sprint(nextRola.GetPath()))
-		main.check(err)
-		
 	})
 	
 	main.handler.OnMute(func() {
-		
+		if main.player == nil {
+			return
+		}
+
+		main.handler.ChangeMuteButtonIcon()
+		if main.handler.IsOnMuteButton() {
+			if main.player.IsPlaying() {
+				main.player.SetVolume(0)
+			}
+		} else {
+			main.player.SetVolume(1)
+		}
 	})
 	
 	main.handler.OnLoop(func() {
+		if main.player == nil {
+			return
+		}
+
+		if main.player.IsPlaying() {
+			main.handler.ChangeLoopButtonIcon()
+			go main.verifyDuration()
+		}
 		
 	})
 
 	main.handler.OnStop(func() {
-		
+		if main.player == nil {
+			return
+		}
+
+		if main.player.IsPlaying() {
+			main.player.Pause()
+			main.handler.ChangePlayButtonIcon()
+		}
 	})
 
 	main.handler.OnSelect(func(id int) {
@@ -191,6 +196,14 @@ func (main *MainApp) addPrincipalEvents() {
 		
 		if main.handler.IsOnPlayButton() {
 			main.handler.ChangePlayButtonIcon()
+		}
+
+		if main.handler.IsOnMuteButton() {
+			main.handler.ChangeMuteButtonIcon()
+		}
+
+		if main.handler.IsOnLoopButton() {
+			main.handler.ChangeLoopButtonIcon()
 		}
 
 		main.idCurrentRola = idRola
@@ -261,5 +274,16 @@ func (main *MainApp) playSong(file *os.File) {
 			break
 		}
 	}
-	
+}
+
+func (main *MainApp) verifyDuration() {
+	for {
+		if !main.player.IsPlaying() {
+			main.player.Reset()
+			if !main.handler.IsOnLoopButton() {
+				break
+			}
+			
+		}
+	}
 }
