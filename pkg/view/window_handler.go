@@ -37,17 +37,6 @@ func CreateNewWindowHandler() *WindowHandler {
 	return &WindowHandler{
 		filePath: "" ,
 		app: app.New(),
-		loadHolder: nil,
-		loadWindow: nil,
-		playButton: nil,
-		loadButton: nil,
-		muteButton: nil,
-		backButton: nil,
-		nextButton: nil,
-		loopButton: nil,
-		stopButton: nil,
-		volumeBar: nil,
-		musicSlider: nil,
 	}
 }
 
