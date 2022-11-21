@@ -289,6 +289,11 @@ func(handler *WindowHandler) IsOnMuteButton() bool {
 	return handler.muteButton.Icon == theme.VolumeMuteIcon()
 }
 
+func (handler *WindowHandler) IsOnLoopButton() bool {
+	var icon *fyne.StaticResource = res.ResourceRepeatLightPng
+	return handler.loopButton.Icon == icon
+}
+
 func (handler *WindowHandler) SelectPreviousItem(currentItem string) int {
 	var j int
 	for i, rola := range (*handler.playList) {

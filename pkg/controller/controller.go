@@ -159,6 +159,14 @@ func (main *MainApp) addPrincipalEvents() {
 	})
 	
 	main.handler.OnLoop(func() {
+		if main.player == nil {
+			return
+		}
+
+		if main.player.IsPlaying() {
+			main.handler.ChangeLoopButtonIcon()
+			go main.verifyDuration()
+		}
 		
 	})
 
@@ -192,6 +200,10 @@ func (main *MainApp) addPrincipalEvents() {
 
 		if main.handler.IsOnMuteButton() {
 			main.handler.ChangeMuteButtonIcon()
+		}
+
+		if main.handler.IsOnLoopButton() {
+			main.handler.ChangeLoopButtonIcon()
 		}
 
 		main.idCurrentRola = idRola
@@ -262,5 +274,16 @@ func (main *MainApp) playSong(file *os.File) {
 			break
 		}
 	}
-	
+}
+
+func (main *MainApp) verifyDuration() {
+	for {
+		if !main.player.IsPlaying() {
+			main.player.Reset()
+			if !main.handler.IsOnLoopButton() {
+				break
+			}
+			
+		}
+	}
 }
