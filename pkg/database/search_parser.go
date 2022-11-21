@@ -7,24 +7,18 @@ import (
 //Search Parser is the parser for specified search by user in the main
 //window of the application.
 type SearchParser struct {
-	request string
+	text string
 }
 
-func CreateNewSearchParser(request string) *SearchParser {
-	return &SearchParser{request}
+func CreateNewSearchParser() *SearchParser {
+	return &SearchParser{""}
+}
+
+func (parser *SearchParser) SetText(text string) {
+	parser.text  = text
 }
 
 func (parser *SearchParser) Parse() string {
-	words := splitStatement(parser.request)
-	
-	for i := 0; len(words) > 0; i++ {
-		word := words[i]
-		if character := word[len(word) - 1]; character == ':' {
-
-		} else {
-			
-		}
-	}
 	return ""
 }
 
@@ -36,7 +30,11 @@ func obtainTable(word string) string {
 	return ""
 }
 
-func  obtainQueryString(words []string) string {
+func obtainQueryString(words []string) string {
 	return ""
+}
+
+func (parser *SearchParser) IsGeneralSearch(text string) bool {
+	return string(text[0]) != ":"
 }
 

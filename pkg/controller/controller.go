@@ -17,6 +17,7 @@ import (
 type MainApp struct {
 	handler *view.WindowHandler
 	database *database.DataBase
+	parser *database.SearchParser
 	filePath string
 	miner *miner.Miner
 	isPlaying bool
@@ -30,6 +31,7 @@ func createMainApp() *MainApp {
 	return &MainApp{
 		handler: view.CreateNewWindowHandler(),
 		database: nil,
+		parser: database.CreateNewSearchParser(),
 		filePath: "",
 		miner: nil,
 		errorThrown: false,
@@ -63,7 +65,6 @@ func (main *MainApp) obtainData()  {
 }
 
 func (main *MainApp) startView() {
-	
 	main.handler.InitializeLoadWindow()
 	main.addLoadEvent()
 
@@ -104,11 +105,9 @@ func (main *MainApp) addPrincipalEvents() {
 		main.check(err)
 		
 		isSelected := main.handler.SelectPreviousItem(rola.GetTitle())
-
 		if isSelected == 0 {
 			return 
-		}
-		
+		}	
 		main.player.Pause()
 	})
 	
@@ -163,19 +162,19 @@ func (main *MainApp) addPrincipalEvents() {
 		if main.player == nil {
 			return
 		}
-
+		
 		if main.player.IsPlaying() {
 			main.handler.ChangeLoopButtonIcon()
 			go main.verifyDuration()
 		}
 		
 	})
-
+	
 	main.handler.OnStop(func() {
 		if main.player == nil {
 			return
 		}
-
+		
 		if main.player.IsPlaying() {
 			main.player.Pause()
 			main.handler.ChangePlayButtonIcon()
@@ -217,9 +216,12 @@ func (main *MainApp) addPrincipalEvents() {
 }
 
 func (main *MainApp) addBarEvents() {
-
 	main.handler.OnSearch(func () {
-		
+		input := main.handler.GetInputText()
+		if main.parser.IsGeneralSearch(input) {
+			main.obtainGeneralSearch(input)
+		}
+		main.obtainSpecificSearch(input)
 	})
 		
 	main.handler.OnVolumeBar(func (float float64) {
@@ -235,6 +237,18 @@ func (main *MainApp) addBarEvents() {
 		}
 	})
 }
+
+
+func (main *MainApp) obtainGeneralSearch(text string) {
+	resultsID, err := main.database.QueryGeneralString(text)
+	main.check(err)
+	
+}
+
+func (main *MainApp) obtainSpecificSearch(text string) {
+	
+}
+
 
 func (main *MainApp) isDirectoryPathFormat(format string) bool {
 	if format == "" || string(format[0]) != "/" {
@@ -304,7 +318,6 @@ func (main *MainApp) verifyDuration() {
 			if !main.handler.IsOnLoopButton() {
 				break
 			}
-			
 		}
 	}
 }
