@@ -68,7 +68,6 @@ func (main *MainApp) obtainData()  {
 func (main *MainApp) startView() {
 	main.handler.InitializeLoadWindow()
 	main.addLoadEvent()
-
 	main.handler.RunApp()
 }
 
@@ -224,6 +223,7 @@ func (main *MainApp) addBarEvents() {
 		input := main.handler.GetInputText()
 
 		if input == "" {
+			main.principal.UpdateToGeneralPlayList()
 			return
 		}
 		

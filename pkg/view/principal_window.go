@@ -8,26 +8,26 @@ import (
 )
 
 type PrincipalWindow struct {
-	window  fyne.Window
-	content *fyne.Container
-	top     *fyne.Container
-	bottom  *fyne.Container
-	left    *fyne.Container
-	right   *fyne.Container
-	center  *widget.List
+	window      fyne.Window
+	content     *fyne.Container
+	top         *fyne.Container
+	bottom      *fyne.Container
+	left        *fyne.Container
+	right       *fyne.Container
+	newPlayList *widget.List
 }
 
-func createPrincipalWindow(window fyne.Window, content *fyne.Container, top *fyne.Container, bottom *fyne.Container, left *fyne.Container, right *fyne.Container, center *widget.List) *PrincipalWindow {
-	return &PrincipalWindow{window, content, top, bottom, left, right, center}
+func createPrincipalWindow(window fyne.Window, content *fyne.Container, top *fyne.Container, bottom *fyne.Container, left *fyne.Container, right *fyne.Container) *PrincipalWindow {
+	return &PrincipalWindow{window, content, top, bottom, left, right, nil}
 }
 
 func (principal *PrincipalWindow) UpdateDisplay(nameSongs *[]string) {
-	principal.setPlayList(nameSongs)
-	newContent := container.NewBorder(principal.top, principal.bottom, nil, nil, principal.center)
+	principal.setNewPlayList(nameSongs) 
+	newContent := container.NewBorder(principal.top, principal.bottom, nil, nil, principal.newPlayList)
 	principal.window.SetContent(newContent)
 }
 
-func (principal *PrincipalWindow) setPlayList(nameSongs *[]string) {
+func (principal *PrincipalWindow) setNewPlayList(nameSongs *[]string) {
 	data := binding.BindStringList(nameSongs)
 	
 	playList := widget.NewListWithData(data,
@@ -37,6 +37,9 @@ func (principal *PrincipalWindow) setPlayList(nameSongs *[]string) {
 		func(i binding.DataItem, o fyne.CanvasObject) {
 			o.(*widget.Label).Bind(i.(binding.String))
 		})
-	principal.center = playList
+	principal.newPlayList = playList
 }
 
+func (principal *PrincipalWindow) UpdateToGeneralPlayList() {
+	principal.window.SetContent(principal.content)
+}

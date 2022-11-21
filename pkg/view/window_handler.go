@@ -114,7 +114,7 @@ func (handler *WindowHandler) InitializePrincipalWindow() {
 	
 	principalWindow.SetContent(content)
 	
-	handler.principal = createPrincipalWindow(principalWindow, content, top, bottom, nil, nil, center)
+	handler.principal = createPrincipalWindow(principalWindow, content, top, bottom, nil, nil)
 
 	principalWindow.Show()
 }
