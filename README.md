@@ -47,6 +47,15 @@ En distribuciones de linux RedHat-based:
  ```
 $ dnf install alsa-lib-devel
  ```
+Tambien será necesario descargar en Fedora:
+ ```
+$ sudo dnf install golang gcc libXcursor-devel libXrandr-devel mesa-libGL-devel libXi-devel libXinerama-devel libXxf86vm-devel
+ ```
+O en Debian/Ubuntu:
+ ```
+$ sudo apt-get install golang gcc libgl1-mesa-dev xorg-dev
+ ```
+ 
 La ruta de directorio debe empezar con el caracter "/"
 
 ### Pruebas Unitarias
