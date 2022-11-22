@@ -9,7 +9,7 @@ import (
 	"time"
 	"os"
 	"log"
-	_"fmt"
+	"fmt"
 	"os/user"
 	_"errors"
 )
@@ -27,6 +27,7 @@ type MainApp struct {
 	idCurrentRola int
 	errorThrown bool
 	isCustomizedSearch bool
+	customizedPlayList map[int]int
 }
 
 func createMainApp() *MainApp {
@@ -37,6 +38,7 @@ func createMainApp() *MainApp {
 		filePath: "",
 		miner: nil,
 		errorThrown: false,
+		customizedPlayList: make(map[int]int),
 	}
 }
 
@@ -216,7 +218,7 @@ func (main *MainApp) addPrincipalEvents() {
 		}
 
 		main.idCurrentRola = idRola
-
+		
 		file, err := os.Open(rola.GetPath())
 		main.check(err)
 		
@@ -261,7 +263,12 @@ func (main *MainApp) addBarEvents() {
 
 func (main *MainApp) addCustomizedSearchEvent() {
 	main.principal.OnSelect(func (id int) {
-		
+		idRola := main.customizedPlayList[id]
+		rola, err := main.database.QueryRola(int64(idRola))
+		if err != nil {
+			return
+		}
+		fmt.Println(rola.GetTitle())
 	})
 }
 
@@ -274,18 +281,21 @@ func (main *MainApp) obtainGeneralSearch(text string) {
 	
 	nameSongs := make([]string, 0)
 
+	i := 0
 	for _, idRola := range(idResults) {
 		rola, err := main.database.QueryRola(idRola)
 		if err != nil {
 			return 
 		}
 		nameSongs = append(nameSongs, rola.GetTitle())
-	
+		main.customizedPlayList[i] = int(idRola)
+		i++
 	}
 	
 	main.principal.UpdateDisplay(&nameSongs)
 	main.addCustomizedSearchEvent()
 }
+
 
 func (main *MainApp) obtainSpecificSearch(text string) {
 	
