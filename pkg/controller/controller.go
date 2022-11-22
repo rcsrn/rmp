@@ -9,7 +9,7 @@ import (
 	"time"
 	"os"
 	"log"
-	"fmt"
+	_"fmt"
 	"os/user"
 	_"errors"
 )
@@ -268,7 +268,34 @@ func (main *MainApp) addCustomizedSearchEvent() {
 		if err != nil {
 			return
 		}
-		fmt.Println(rola.GetTitle())
+
+		
+		if main.isPlaying {
+			main.player.Pause()
+			if  idRola == main.idCurrentRola {
+				return
+			}
+		}
+		
+		if main.handler.IsOnPlayButton() {
+			main.handler.ChangePlayButtonIcon()
+		}
+		
+		if main.handler.IsOnMuteButton() {
+			main.handler.ChangeMuteButtonIcon()
+		}
+		
+		if main.handler.IsOnLoopButton() {
+			main.handler.ChangeLoopButtonIcon()
+		}
+		
+		main.idCurrentRola = idRola
+		
+		file, err := os.Open(rola.GetPath())
+		main.check(err)
+		
+		go main.playSong(file)
+		
 	})
 }
 
