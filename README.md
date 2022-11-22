@@ -25,20 +25,8 @@ Si en algún momento ocurre un error el usuario será notificado con un mensaje 
 * Controlador:
 En el controlador tendremos un objeto MainApp el cual tendrá como propiedades un WindowHandler, un DataBase, así como la ruta de directorio ingresada por el usuario. MainApp a través de su WindowHandler construirá la interfaz de usuario y asignará funcionalidades a cada uno de los botones de la misma.
 
-### Compilación
-    
-Para compilar el programa ejecutar el siguiente comando:
-```
-$ go build cmd/rmp.go
-```
-     
-### Ejecución
+### Instalación
 
-Para ejecutar el programa ejecutar el siguiente comando:
-```
-$ ./rmp
-```
-### Uso
 Es necesario descargar ALSA. En Ubuntu o Debian, correr el comando:
  ```
 $ apt install libasound2-dev
@@ -54,7 +42,21 @@ $ sudo dnf install golang gcc libXcursor-devel libXrandr-devel mesa-libGL-devel 
 O en Debian/Ubuntu:
  ```
 $ sudo apt-get install golang gcc libgl1-mesa-dev xorg-dev
- ```
+
+### Compilación
+    
+Para compilar el programa ejecutar el siguiente comando:
+```
+$ go build cmd/rmp.go
+```
+     
+### Ejecución
+
+Para ejecutar el programa ejecutar el siguiente comando:
+```
+$ ./rmp
+```
+### Uso
  
 La ruta de directorio debe empezar con el caracter "/"
 
