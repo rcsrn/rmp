@@ -14,43 +14,39 @@ import (
 )
 
 type WindowHandler struct {
-	filePath    string
-	app         fyne.App
-	loadWindow  fyne.Window
-	loadHolder  *widget.Entry
-	playButton  *widget.Button
-	loadButton  *widget.Button
-	muteButton  *widget.Button
-	backButton  *widget.Button
-	nextButton  *widget.Button
-	loopButton  *widget.Button
-	stopButton  *widget.Button
-	volumeBar   *widget.Slider
-	musicSlider *widget.Slider
-	list        *widget.List
-	playList    *[]string
+	filePath     string
+	app          fyne.App
+	principal    *PrincipalWindow
+	loadWindow   fyne.Window
+	loadHolder   *widget.Entry
+	searchBar    *widget.Entry
+	searchButton *widget.Button
+	playButton   *widget.Button
+	loadButton   *widget.Button
+	muteButton   *widget.Button
+	backButton   *widget.Button
+	nextButton   *widget.Button
+	loopButton   *widget.Button
+	stopButton   *widget.Button
+	volumeBar    *widget.Slider
+	musicSlider  *widget.Slider
+	list         *widget.List
+	playList     *[]string
 }
 
 func CreateNewWindowHandler() *WindowHandler {
 	return &WindowHandler{
 		filePath: "" ,
 		app: app.New(),
-		loadHolder: nil,
-		loadWindow: nil,
-		playButton: nil,
-		loadButton: nil,
-		muteButton: nil,
-		backButton: nil,
-		nextButton: nil,
-		loopButton: nil,
-		stopButton: nil,
-		volumeBar: nil,
-		musicSlider: nil,
 	}
 }
 
 func (handler *WindowHandler) GetFilePath() string {
 	return handler.filePath
+}
+
+func (handler *WindowHandler) GetPrincipalWindow() *PrincipalWindow {
+	return handler.principal
 }
 
 func (handler *WindowHandler) SetPlayList(playList *[]string) {
@@ -95,12 +91,19 @@ func (handler *WindowHandler) InitializePrincipalWindow() {
 
 	searchBar := widget.NewEntry()
 	searchBar.SetPlaceHolder("Search...")
+	handler.searchBar = searchBar
 
-	top := container.NewVBox(searchBar)
+	searchButton := widget.NewButton("", func() {})
+	searchButton.SetIcon(theme.SearchIcon())
+	handler.searchButton = searchButton
+
+	top := container.New(layout.NewFormLayout(),
+		searchButton,
+		searchBar)
 
 	controls := handler.createControls()
 	musicBar := handler.createMusicBar()
-
+	
 	bottom := container.NewGridWithRows(2,
 		controls,
 		musicBar)
@@ -110,6 +113,8 @@ func (handler *WindowHandler) InitializePrincipalWindow() {
 	content := container.NewBorder(top, bottom, nil, nil, center)
 	
 	principalWindow.SetContent(content)
+	
+	handler.principal = createPrincipalWindow(principalWindow, content, top, bottom, nil, nil)
 
 	principalWindow.Show()
 }
@@ -249,6 +254,10 @@ func (handler *WindowHandler) ChangeLoopButtonIcon() int {
 	
 }
 
+func (handler *WindowHandler) OnSearch(action func()) {
+	handler.searchButton.OnTapped = action
+}
+
 func (handler *WindowHandler) OnLoad(action func()) {
 	handler.loadButton.OnTapped = action
 }
@@ -340,4 +349,8 @@ func (handler *WindowHandler) SetDataToMusicSlider(float float64) {
 func (handler *WindowHandler) SetDataToVolumeSlider(float float64) {
 	data := binding.BindFloat(&float)
 	handler.volumeBar.Bind(data)
+}
+
+func (handler *WindowHandler) GetInputText() string {
+	return handler.searchBar.Text
 }

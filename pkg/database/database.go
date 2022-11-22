@@ -425,3 +425,4 @@ func (database *DataBase) QueryGeneralString(general string) ([]int64, error) {
 	tx.Commit()
 	return result, nil
 }
+

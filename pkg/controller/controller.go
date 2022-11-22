@@ -16,7 +16,9 @@ import (
 
 type MainApp struct {
 	handler *view.WindowHandler
+	principal *view.PrincipalWindow
 	database *database.DataBase
+	parser *database.SearchParser
 	filePath string
 	miner *miner.Miner
 	isPlaying bool
@@ -24,12 +26,14 @@ type MainApp struct {
 	context *oto.Context
 	idCurrentRola int
 	errorThrown bool
+	isCustomizedSearch bool
 }
 
 func createMainApp() *MainApp {
 	return &MainApp{
 		handler: view.CreateNewWindowHandler(),
 		database: nil,
+		parser: database.CreateNewSearchParser(),
 		filePath: "",
 		miner: nil,
 		errorThrown: false,
@@ -63,10 +67,8 @@ func (main *MainApp) obtainData()  {
 }
 
 func (main *MainApp) startView() {
-	
 	main.handler.InitializeLoadWindow()
 	main.addLoadEvent()
-
 	main.handler.RunApp()
 }
 
@@ -87,6 +89,8 @@ func (main *MainApp) addLoadEvent() {
 				main.handler.SetPlayList(playList)
 				
 				main.handler.InitializePrincipalWindow()
+				main.principal = main.handler.GetPrincipalWindow()
+				
 				main.addPrincipalEvents()
 				main.addBarEvents()
 			}
@@ -104,11 +108,9 @@ func (main *MainApp) addPrincipalEvents() {
 		main.check(err)
 		
 		isSelected := main.handler.SelectPreviousItem(rola.GetTitle())
-
 		if isSelected == 0 {
 			return 
-		}
-		
+		}	
 		main.player.Pause()
 	})
 	
@@ -163,19 +165,19 @@ func (main *MainApp) addPrincipalEvents() {
 		if main.player == nil {
 			return
 		}
-
+		
 		if main.player.IsPlaying() {
 			main.handler.ChangeLoopButtonIcon()
 			go main.verifyDuration()
 		}
 		
 	})
-
+	
 	main.handler.OnStop(func() {
 		if main.player == nil {
 			return
 		}
-
+		
 		if main.player.IsPlaying() {
 			main.player.Pause()
 			main.handler.ChangePlayButtonIcon()
@@ -183,6 +185,12 @@ func (main *MainApp) addPrincipalEvents() {
 	})
 
 	main.handler.OnSelect(func(id int) {
+		
+		if main.isCustomizedSearch {
+			main.handleSpecificSearch(id)
+			return
+		}
+		
 		rola, err := main.database.QueryRola(int64(id))	
 		main.check(err)
 
@@ -214,14 +222,34 @@ func (main *MainApp) addPrincipalEvents() {
 		
 		go main.playSong(file)
 	})
+	
 }
 
 func (main *MainApp) addBarEvents() {
+	main.handler.OnSearch(func () {
+		
+		input := main.handler.GetInputText()
+
+		if input == "" {
+			main.principal.UpdateToGeneralPlayList()
+			main.isCustomizedSearch = false
+			return
+		}
+
+		main.isCustomizedSearch = true
+		
+		if main.parser.IsGeneralSearch(input) {
+			main.obtainGeneralSearch(input)
+		} else {
+			main.obtainSpecificSearch(input)
+		}
+	})
+		
 	main.handler.OnVolumeBar(func (float float64) {
 		if main.player == nil {
 			return
 		}
-		main.player.SetVolume(float)
+		main.player.SetVolume(float/30)
 	})
 
 	main.handler.OnMusicBar(func (float float64) {
@@ -230,6 +258,43 @@ func (main *MainApp) addBarEvents() {
 		}
 	})
 }
+
+func (main *MainApp) addCustomizedSearchEvent() {
+	main.principal.OnSelect(func (id int) {
+		
+	})
+}
+
+
+func (main *MainApp) obtainGeneralSearch(text string) {
+	idResults, err := main.database.QueryGeneralString(text)
+	if err != nil {
+		return
+	}
+	
+	nameSongs := make([]string, 0)
+
+	for _, idRola := range(idResults) {
+		rola, err := main.database.QueryRola(idRola)
+		if err != nil {
+			return 
+		}
+		nameSongs = append(nameSongs, rola.GetTitle())
+	
+	}
+	
+	main.principal.UpdateDisplay(&nameSongs)
+	main.addCustomizedSearchEvent()
+}
+
+func (main *MainApp) obtainSpecificSearch(text string) {
+	
+}
+
+func (main *MainApp) handleSpecificSearch(id int) {
+	
+}
+
 
 func (main *MainApp) isDirectoryPathFormat(format string) bool {
 	if format == "" || string(format[0]) != "/" {
@@ -299,7 +364,6 @@ func (main *MainApp) verifyDuration() {
 			if !main.handler.IsOnLoopButton() {
 				break
 			}
-			
 		}
 	}
 }
