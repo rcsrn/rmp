@@ -49,3 +49,7 @@ func (principal *PrincipalWindow) setNewPlayList(nameSongs *[]string) {
 func (principal *PrincipalWindow) UpdateToGeneralPlayList() {
 	principal.window.SetContent(principal.content)
 }
+
+func (principal *PrincipalWindow) OnSelect(action func (id int)) {
+	principal.newPlayList.OnSelected = action
+}

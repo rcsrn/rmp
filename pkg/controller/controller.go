@@ -26,6 +26,7 @@ type MainApp struct {
 	context *oto.Context
 	idCurrentRola int
 	errorThrown bool
+	isCustomizedSearch bool
 }
 
 func createMainApp() *MainApp {
@@ -184,6 +185,12 @@ func (main *MainApp) addPrincipalEvents() {
 	})
 
 	main.handler.OnSelect(func(id int) {
+		
+		if main.isCustomizedSearch {
+			main.handleSpecificSearch(id)
+			return
+		}
+		
 		rola, err := main.database.QueryRola(int64(id))	
 		main.check(err)
 
@@ -215,6 +222,7 @@ func (main *MainApp) addPrincipalEvents() {
 		
 		go main.playSong(file)
 	})
+	
 }
 
 func (main *MainApp) addBarEvents() {
@@ -224,8 +232,11 @@ func (main *MainApp) addBarEvents() {
 
 		if input == "" {
 			main.principal.UpdateToGeneralPlayList()
+			main.isCustomizedSearch = false
 			return
 		}
+
+		main.isCustomizedSearch = true
 		
 		if main.parser.IsGeneralSearch(input) {
 			main.obtainGeneralSearch(input)
@@ -248,13 +259,19 @@ func (main *MainApp) addBarEvents() {
 	})
 }
 
+func (main *MainApp) addCustomizedSearchEvent() {
+	main.principal.OnSelect(func (id int) {
+		
+	})
+}
+
 
 func (main *MainApp) obtainGeneralSearch(text string) {
 	idResults, err := main.database.QueryGeneralString(text)
 	if err != nil {
 		return
 	}
-
+	
 	nameSongs := make([]string, 0)
 
 	for _, idRola := range(idResults) {
@@ -263,11 +280,18 @@ func (main *MainApp) obtainGeneralSearch(text string) {
 			return 
 		}
 		nameSongs = append(nameSongs, rola.GetTitle())
+	
 	}
+	
 	main.principal.UpdateDisplay(&nameSongs)
+	main.addCustomizedSearchEvent()
 }
 
 func (main *MainApp) obtainSpecificSearch(text string) {
+	
+}
+
+func (main *MainApp) handleSpecificSearch(id int) {
 	
 }
 
