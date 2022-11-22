@@ -27,6 +27,7 @@ type MainApp struct {
 	idCurrentRola int
 	errorThrown bool
 	isCustomizedSearch bool
+	customizedPlayList map[int]int
 }
 
 func createMainApp() *MainApp {
@@ -37,6 +38,7 @@ func createMainApp() *MainApp {
 		filePath: "",
 		miner: nil,
 		errorThrown: false,
+		customizedPlayList: make(map[int]int),
 	}
 }
 
@@ -216,7 +218,7 @@ func (main *MainApp) addPrincipalEvents() {
 		}
 
 		main.idCurrentRola = idRola
-
+		
 		file, err := os.Open(rola.GetPath())
 		main.check(err)
 		
@@ -261,6 +263,38 @@ func (main *MainApp) addBarEvents() {
 
 func (main *MainApp) addCustomizedSearchEvent() {
 	main.principal.OnSelect(func (id int) {
+		idRola := main.customizedPlayList[id]
+		rola, err := main.database.QueryRola(int64(idRola))
+		if err != nil {
+			return
+		}
+
+		
+		if main.isPlaying {
+			main.player.Pause()
+			if  idRola == main.idCurrentRola {
+				return
+			}
+		}
+		
+		if main.handler.IsOnPlayButton() {
+			main.handler.ChangePlayButtonIcon()
+		}
+		
+		if main.handler.IsOnMuteButton() {
+			main.handler.ChangeMuteButtonIcon()
+		}
+		
+		if main.handler.IsOnLoopButton() {
+			main.handler.ChangeLoopButtonIcon()
+		}
+		
+		main.idCurrentRola = idRola
+		
+		file, err := os.Open(rola.GetPath())
+		main.check(err)
+		
+		go main.playSong(file)
 		
 	})
 }
@@ -274,18 +308,21 @@ func (main *MainApp) obtainGeneralSearch(text string) {
 	
 	nameSongs := make([]string, 0)
 
+	i := 0
 	for _, idRola := range(idResults) {
 		rola, err := main.database.QueryRola(idRola)
 		if err != nil {
 			return 
 		}
 		nameSongs = append(nameSongs, rola.GetTitle())
-	
+		main.customizedPlayList[i] = int(idRola)
+		i++
 	}
 	
 	main.principal.UpdateDisplay(&nameSongs)
 	main.addCustomizedSearchEvent()
 }
+
 
 func (main *MainApp) obtainSpecificSearch(text string) {
 	
