@@ -42,6 +42,7 @@ $ sudo dnf install golang gcc libXcursor-devel libXrandr-devel mesa-libGL-devel 
 O en Debian/Ubuntu:
  ```
 $ sudo apt-get install golang gcc libgl1-mesa-dev xorg-dev
+```
 
 ### Compilación
     
